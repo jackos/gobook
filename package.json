@@ -1,14 +1,15 @@
 {
 	"name": "gobook",
 	"publisher": "gobookdev",
-	"displayName": "Gobook Go Notebook",
-	"description": "Run Go code in .md or .gobook files interactively like a Jupyter Notebook",
+	"displayName": "Go Notebook - Gobook",
+	"description": "Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
 	"version": "0.0.1",
 	"extensionDependencies": [
 		"ethan-reesor.go-notebook-kernel"
 	],
 	"preview": true,
 	"enableProposedApi": false,
+	"icon": "images/icon.png",
 	"engines": {
 		"vscode": "^1.57.0"
 	},
@@ -32,13 +33,20 @@
 		"notebooks": [
 			{
 				"type": "markdown-notebook",
-				"displayName": "Gobook Go Notebook",
+				"displayName": "Gobook",
 				"priority": "default",
 				"selector": [
 					{
 						"filenamePattern": "*.{md,markdown,gobook}"
 					}
 				]
+			}
+		],
+		"iconThemes": [
+			{
+				"id": "gobook",
+				"label": "gobook",
+				"path": "./images/icon.png"
 			}
 		]
 	},
