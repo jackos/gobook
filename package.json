@@ -41,13 +41,6 @@
 					}
 				]
 			}
-		],
-		"iconThemes": [
-			{
-				"id": "gobook",
-				"label": "gobook",
-				"path": "./images/icon.png"
-			}
 		]
 	},
 	"scripts": {
