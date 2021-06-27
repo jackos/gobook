@@ -3,7 +3,7 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook - Gobook",
 	"description": "Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"extensionDependencies": [
 		"ethan-reesor.go-notebook-kernel"
 	],
