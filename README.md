@@ -6,9 +6,9 @@ This extension currently only works on VS Code Insiders as it's reliant on a fix
 
 ## Install Instructions
 - Install the extension
-- Extension will prompt you to install a kernal
+- Extension will prompt you to install a kernel
 - Extension will automatically start when opening a .gobook file
-- To use it with a .md or .markdown file, right click on the file  and press 'Open With' then 'Gobook'
+- To use it with a .md or .markdown file, right click on the file and press 'Open With' then 'Gobook'
 
 
 ## Usage Instructions

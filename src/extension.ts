@@ -6,6 +6,7 @@
 import { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } from 'constants';
 import * as vscode from 'vscode';
 import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdownParser';
+import { GobookCompletionProvider } from './languageCompletionProvider';
 
 const providerOptions = {
 	transientMetadata: {
@@ -17,7 +18,10 @@ const providerOptions = {
 };
 
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(), providerOptions));
+	context.subscriptions.push(
+		vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(), providerOptions),
+	);
+
 }
 
 class MarkdownProvider implements vscode.NotebookSerializer {

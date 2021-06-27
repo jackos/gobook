@@ -3,24 +3,26 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.0.4",
+	"version": "0.0.6",
 	"extensionDependencies": [
 		"ethan-reesor.go-notebook-kernel"
 	],
 	"preview": true,
-	"enableProposedApi": false,
+	"enableProposedApi": true,
 	"icon": "images/icon.png",
 	"engines": {
-		"vscode": "^1.57.0"
+		"vscode": "^1.58.0"
 	},
 	"repository": {
 		"url": "https://github.com/gobookdev/gobook"
 	},
 	"categories": [
-		"Other"
+		"Notebooks"
 	],
 	"activationEvents": [
-		"onNotebook:markdown-notebook"
+		"onNotebook:markdown-notebook",
+		"onLanguage:gobook",
+		"onCommand:gobook.newNotebook"
 	],
 	"main": "./out/extension.js",
 	"capabilities": {
@@ -30,6 +32,19 @@
 		}
 	},
 	"contributes": {
+		"commands": [
+			{
+				"title": "Gobook: Create a new blank Go Notebook",
+				"command": "gobook.newGobook"
+			}
+		],
+		"startEntries": [
+			{
+				"title": "Gobook",
+				"description": "Run Go code interactively in a markdown format",
+				"command": "gobook.newGobook"
+			}
+		],
 		"notebooks": [
 			{
 				"type": "markdown-notebook",
@@ -40,6 +55,37 @@
 						"filenamePattern": "*.{md,markdown,gobook}"
 					}
 				]
+			}
+		],
+		"notebookRenderer": [
+			{
+				"id": "gobook",
+				"displayName": "Gobook",
+				"entrypoint": "./out/renderer/index.js",
+				"mimeTypes": [
+					"x-application/gobook"
+				]
+			}
+		],
+		"languages": [
+			{
+				"id": "gobook",
+				"aliases": [
+					"Gobook"
+				],
+				"filenamePatterns": [
+					"*.gobook"
+				]
+			}
+		],
+		"grammars": [
+			{
+				"language": "gobook",
+				"scopeName": "source.gobook",
+				"path": "./syntaxes/gobook.tmGrammar.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.go": "go"
+				}
 			}
 		]
 	},
