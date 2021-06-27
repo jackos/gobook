@@ -1,16 +1,19 @@
 {
-	"name": "vscode-markdown-notebook",
-	"publisher": "ms-vscode",
-	"displayName": "Markdown Notebook",
-	"description": "An extension for editing markdown files in VS Code notebooks",
-	"version": "0.0.22",
+	"name": "gobook",
+	"publisher": "gobookdev",
+	"displayName": "Gobook Go Notebook",
+	"description": "Run Go code in .md or .gobook files interactively like a Jupyter Notebook",
+	"version": "0.0.1",
+	"extensionDependencies": [
+		"ethan-reesor.go-notebook-kernel"
+	],
 	"preview": true,
-	"enableProposedApi": true,
+	"enableProposedApi": false,
 	"engines": {
 		"vscode": "^1.57.0"
 	},
 	"repository": {
-		"url": "https://github.com/microsoft/vscode-markdown-notebook"
+		"url": "https://github.com/gobookdev/gobook"
 	},
 	"categories": [
 		"Other"
@@ -29,11 +32,11 @@
 		"notebooks": [
 			{
 				"type": "markdown-notebook",
-				"displayName": "Markdown Notebook",
-				"priority": "option",
+				"displayName": "Gobook Go Notebook",
+				"priority": "default",
 				"selector": [
 					{
-						"filenamePattern": "*.{md,markdown}"
+						"filenamePattern": "*.{md,markdown,gobook}"
 					}
 				]
 			}

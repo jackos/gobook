@@ -1,0 +1,9 @@
+```go
+import "fmt"
+```
+
+```go
+x := 10
+y := 5
+fmt.Println(x + y)
+```

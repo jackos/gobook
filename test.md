@@ -17,3 +17,12 @@ const thisCell = "A js code block";
     ```
 
 2. embedded in the list
+
+```go
+x := 10
+println(x + 20)
+```
+
+```go
+println(x)
+```

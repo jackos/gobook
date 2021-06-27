@@ -1,23 +1,26 @@
-# vscode-markdown-notebook
+# Gobook Go Notebook VS Code Extension
 
-- Requires VS Code Insiders
-- Install extension
-- Right click on a markdown file
-- Choose "Open With...", then choose "Markdown Notebook"
+## Warning!
+This extension currently only works on VS Code Insiders as it's reliant on a fix:
+[Issue 121456](https://github.com/microsoft/vscode/issues/121456). Expect it to be available in the next stable release in July.
 
-### Note
-This is a very simple extension for selfhosting notebook support in VS Code. It tries to maintain the formatting of your markdown file, but you may see minor tweaks. No warrantee given. It does not maintain line endings (it will read CRLF but will output LF).
+## Usage Instructions
+- Install the extension
+- Right click on a .markdown, .md or .gobook file
+- Choose "Open With...", then choose "Gobook Go Notebook"
+- Extension will automatically start when opening a .gobook file
 
-# Contributing
+## Origin
+This project originated from vscode-markdown-notebook provided by Microsoft as an example for using their Notebook API, but is intended to be specific for Go.
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+## Kernel
+The kernel being used is [Go Notebook Kernel](https://marketplace.visualstudio.com/items?itemName=ethan-reesor.go-notebook-kernel) by Ethan Reesor, which uses [Yaegi](https://github.com/traefik/yaegi) under the hood, the extension will prompt you to install it as a dependency.
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+## Development Status
+- [x] Add an option to active extension when opening .md or .markdown files
+- [x] Activate extension as default when opening a .gobook file
+- [ ] Save output of cells to file
+- [ ] Syntax highlighting
+- [ ] Code completion
+- [ ] Auto format cells
+- [ ] Export to PDF
