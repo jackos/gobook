@@ -47,7 +47,7 @@ The kernel being used is [Go Notebook Kernel](https://marketplace.visualstudio.c
 - [ x ] Activate extension as default when opening a .gobook file
 - [   ] Make an icon for .gobook files
 - [   ] Save output of cells to file
-- [   ] Syntax highlighting
+- [ x ] Syntax highlighting
 - [   ] Code completion
 - [   ] Auto format cells
 - [   ] Export to PDF

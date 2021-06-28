@@ -11,3 +11,12 @@ x := 10
 y := 5
 fmt.Println("x + y =", x + y)
 ```
+
+```go
+println("wow")
+```
+
+```go
+x := 10
+println(x)
+```

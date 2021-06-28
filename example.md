@@ -13,5 +13,13 @@ fmt.Println("x + y =", x + y)
 ```
 
 ```go
+fmt.Println("Output")
+```
+
+```go
+println("test")
+```
+
+```go
 
 ```
