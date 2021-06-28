@@ -133,11 +133,6 @@
 		]
 	},
 	"scripts": {
-		"lint": "eslint src --ext ts",
-		"deploy": "npx vsce publish --noVerify",
-		"watch:test": "tsc -watch -p ./",
-		"pretest": "yarn run compile && yarn run lint",
-		"test": "node ./out/test/runTest.js",
 		"compile:extension": "yarn run bundle --sourcemap",
 		"watch:extension": "yarn run bundle --sourcemap --watch",
 		"compile:grpc:js": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/proto --grpc_out=grpc_js:src/proto --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin kernel.proto",
