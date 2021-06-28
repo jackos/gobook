@@ -18,6 +18,14 @@ export function activate(context: vscode.ExtensionContext) {
 		await Kernel.install(false);
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.newGobook', async () => {
+		const newNotebook = await vscode.workspace.openNotebookDocument('gobook',
+			new vscode.NotebookData([
+				new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '', 'gobook')
+			]));
+		vscode.window.showNotebookDocument(newNotebook);
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.stopSession', async () => {
 		const uri = vscode.window.activeTextEditor?.document?.uri;
 		if (uri) kernel.stopSession(uri);

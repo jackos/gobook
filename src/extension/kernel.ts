@@ -144,97 +144,78 @@ export class Kernel {
         exec.start();
         exec.clearOutput();
         this.diagnostics.set(exec.cell.document.uri, []);
-
         type endData = { success: boolean; };
-
         let resolve: (_: endData) => void;
         const done = new Promise<endData>((r, j) => (resolve = r));
-
         const handle = async (msg: ToClient) => {
-            switch (msg.getKindCase()) {
-                case ToClient.KindCase.OUTPUT:
-                    {
-                        const items = msg.getOutput()!.getContentList().map(c => {
-                            let mime = c.getMime();
-                            let value = Buffer.from(c.getValue());
-
-                            switch (mime) {
-                                case 'stdout':
-                                    return vscode.NotebookCellOutputItem.text(value.toString('utf-8'));
-
-                                case 'stderr':
-                                    return vscode.NotebookCellOutputItem.stderr(value.toString('utf-8'));
-                            }
-
-                            // return new vscode.NotebookCellOutputItem(value, 'text/html');
-                            return new vscode.NotebookCellOutputItem(value, mime);
-                        });
-
-                        exec.appendOutput([new vscode.NotebookCellOutput(items)]);
+            const kindCase = msg.getKindCase();
+            console.log(msg);
+            if (kindCase === ToClient.KindCase.OUTPUT) {
+                const items = msg.getOutput()!.getContentList().map(c => {
+                    let mime = c.getMime();
+                    let value = Buffer.from(c.getValue());
+                    if (mime === 'stdout') {
+                        return vscode.NotebookCellOutputItem.stdout(value.toString('utf-8'));
                     }
-                    break;
+                    else if (mime === 'stderr') {
+                        return vscode.NotebookCellOutputItem.stderr(value.toString('utf-8'));
+                    }
+                    return new vscode.NotebookCellOutputItem(value, mime);
+                });
+                await exec.appendOutput([new vscode.NotebookCellOutput(items)]);
+            }
+            else if (kindCase === ToClient.KindCase.EVALUATE) {
+                {
+                    const resp = msg.getEvaluate()!.toObject();
+                    const result: endData = {
+                        success: true,
+                    };
 
-                case ToClient.KindCase.EVALUATE:
-                    {
-                        const resp = msg.getEvaluate()!.toObject();
-                        const result: endData = {
-                            success: true,
-                        };
+                    for (const err of resp.errorsList) {
+                        result.success = false;
 
-                        for (const err of resp.errorsList) {
-                            result.success = false;
+                        if (err.position) {
+                            const lineNo = err.position.line - 1;
+                            const column = err.position.column - 1;
+                            const line = exec.cell.document.lineAt(lineNo);
 
-                            if (err.position) {
-                                const lineNo = err.position.line - 1;
-                                const column = err.position.column - 1;
-                                const line = exec.cell.document.lineAt(lineNo);
-
-                                this.diagnostics.set(exec.cell.document.uri, [
-                                    new vscode.Diagnostic(new vscode.Range(lineNo, column, lineNo, line.text.length - column), err.message, vscode.DiagnosticSeverity.Error)
-                                ]);
-                            }
-
-                            exec.appendOutput([
-                                new vscode.NotebookCellOutput([
-                                    vscode.NotebookCellOutputItem.stderr(err.message)
-                                ])
+                            this.diagnostics.set(exec.cell.document.uri, [
+                                new vscode.Diagnostic(new vscode.Range(lineNo, column, lineNo, line.text.length - column), err.message, vscode.DiagnosticSeverity.Error)
                             ]);
                         }
 
-                        session.off('data', handle);
-                        resolve(result);
+                        exec.appendOutput([
+                            new vscode.NotebookCellOutput([
+                                vscode.NotebookCellOutputItem.stderr(err.message)
+                            ])
+                        ]);
                     }
-                    break;
 
-                case ToClient.KindCase.PROMPT:
-                    {
-                        const { placeholder, ...opts } = msg.getPrompt()!.toObject();
-                        const answer = await vscode.window.showInputBox({ ...opts, placeHolder: placeholder });
+                    session.off('data', handle);
+                    resolve(result);
+                }
+            } else if (kindCase === ToClient.KindCase.PROMPT) {
+                const { placeholder, ...opts } = msg.getPrompt()!.toObject();
+                const answer = await vscode.window.showInputBox({ ...opts, placeHolder: placeholder });
 
-                        const resp = new PromptResponse();
-                        if (answer) resp.setValue(answer);
+                const resp = new PromptResponse();
+                if (answer) resp.setValue(answer);
 
-                        session.write(new ToServer().setPrompt(resp));
-                    }
-                    break;
+                session.write(new ToServer().setPrompt(resp));
+            } else if (kindCase === ToClient.KindCase.CACHE) {
+                let cache = this.cache.get(exec.cell.notebook.uri);
+                if (!cache)
+                    this.cache.set(exec.cell.notebook.uri, (cache = {}));
 
-                case ToClient.KindCase.CACHE:
-                    {
-                        let cache = this.cache.get(exec.cell.notebook.uri);
-                        if (!cache)
-                            this.cache.set(exec.cell.notebook.uri, (cache = {}));
+                const req = msg.getCache()!.toObject();
+                const resp = new CacheResponse();
+                if (req.key in cache)
+                    resp.setValue(cache[req.key]);
 
-                        const req = msg.getCache()!.toObject();
-                        const resp = new CacheResponse();
-                        if (req.key in cache)
-                            resp.setValue(cache[req.key]);
+                if (req.write)
+                    cache[req.key] = req.write;
 
-                        if (req.write)
-                            cache[req.key] = req.write;
-
-                        session.write(new ToServer().setCache(resp));
-                    }
-                    break;
+                session.write(new ToServer().setCache(resp));
             }
         };
 

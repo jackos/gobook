@@ -62,7 +62,7 @@
 		},
 		"commands": [
 			{
-				"command": "gobook.newGobook",
+				"command": "gobook.new",
 				"title": "Gobook: Create a new blank Go Notebook",
 				"description": "Creates a blank notebook and opens it with Gobook"
 			},

@@ -41,9 +41,7 @@ The kernel being used originated from [Go Notebook Kernel](https://marketplace.v
 
 All credit to Ethan Reesor.
 
-Originally was using it as a dependency but needed to merge it into this project to allow for changes to make it work with .gobook files and allow local debugging.
-
-
+Originally was using it as a dependency but ultimately merged it into this project for ease of development and local debugging.
 
 ## Development Status
 ### Working
@@ -52,10 +50,24 @@ Originally was using it as a dependency but needed to merge it into this project
 - Syntax highlighting
 - Save output of cells to file
 - Reload output when reopening file
+- Markdown formatting to represent code in and code out 
 
 ### In Development 
-- Make an icon for .gobook files
 - Code completion / linting
 - Auto format cells
-- Variables explorer
+- Variables explorer by saving state
 - Export to PDF
+
+### Future development
+- Add support to execute JS, TS and Python code cells with additional kernels
+- Shared state between all languages, i.e. initialize x in Python and use it in Go
+- API for adding any language 
+
+## Known Issues
+### Being worked on
+- Printing in a loop sometimes results in an output being left in the buffer, and printing on the next execution
+- var keyword has issues when rerunning cells
+- Have to run imports in separate cells
+- Rerunning imports not handled gracefully
+
+[If you have any other issues please submit here](https://github.com/gobookdev/gobook/issues)
