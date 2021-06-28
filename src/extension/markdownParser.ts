@@ -6,6 +6,7 @@
 import { StringDecoder } from 'string_decoder';
 import { TextDecoder, TextEncoder } from 'util';
 import * as vscode from 'vscode';
+import { getConfig } from './config';
 
 export interface RawNotebookCell {
 	indentation?: string;
@@ -60,6 +61,10 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 
 	// Each parse function starts with line i, leaves i on the line after the last line parsed
 	for (; i < lines.length;) {
+		if (lines[i] === outputHeader) {
+			i++;
+			continue;
+		}
 		const leadingWhitespace = i === 0 ? parseWhitespaceLines(true) : '';
 		const codeBlockMatch = parseCodeBlockStart(lines[i]);
 		if (codeBlockMatch && codeBlockMatch.langId === 'output') {
@@ -153,7 +158,10 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 }
 
 const stringDecoder = new TextDecoder();
+const inputHeader = getConfig().get('headers.input') as string;
+const outputHeader = getConfig().get('headers.output') as string;
 export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellData>): string {
+
 	let result = '';
 	for (let i = 0; i < cells.length; i++) {
 		const cell = cells[i];
@@ -176,9 +184,15 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellDat
 				.join('\n');
 			const codeSuffix = '\n' + indentation + '```';
 
+			if (inputHeader.length) {
+				result += `\n${inputHeader}\n`;
+			}
 			result += codePrefix + contents + codeSuffix;
-			if (outputParsed.length > 0) {
-				result += '\n```output\n' + outputParsed;
+			if (outputParsed.length) {
+				if (outputHeader.length) {
+					result += `\n${outputHeader}\n`;
+				}
+				result += '```output\n' + outputParsed;
 				if (outputParsed.slice(-1) != '\n') {
 					result += '\n';
 				}

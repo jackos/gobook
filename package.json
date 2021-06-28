@@ -17,7 +17,7 @@
 		"Notebooks"
 	],
 	"activationEvents": [
-		"onNotebook:markdown-notebook",
+		"onNotebook:gobook",
 		"onLanguage:gobook",
 		"onCommand:gobook.newNotebook"
 	],
@@ -33,27 +33,39 @@
 			"type": "object",
 			"title": "Go Notebook Kernel configuration",
 			"properties": {
-				"goNotebookKernel.go.path": {
+				"gobook.headers.input": {
+					"description": "Header to place above each input cell when rendering markdown",
+					"type": "string",
+					"scope": "window",
+					"default": "##### *in*"
+				},
+				"gobook.headers.output": {
+					"description": "Header to place above each output cell when rendering markdown",
+					"type": "string",
+					"scope": "window",
+					"default": "##### *out*"
+				},
+				"gobook.go.path": {
 					"description": "Path to `go` executable",
 					"type": "string",
 					"scope": "window"
 				},
-				"goNotebookKernel.kernel.path": {
+				"gobook.kernel.path": {
 					"description": "Path to kernel executable",
 					"type": "string",
 					"scope": "window"
 				},
-				"goNotebookKernel.kernel.module": {
+				"gobook.kernel.module": {
 					"description": "Kernel module",
 					"type": "string",
 					"scope": "window"
 				},
-				"goNotebookKernel.kernel.version": {
+				"gobook.kernel.version": {
 					"description": "Kernel version",
 					"type": "string",
 					"scope": "window"
 				},
-				"goNotebookKernel.kernel.tags": {
+				"gobook.kernel.tags": {
 					"description": "Tags to use when building the kernel",
 					"type": "string",
 					"scope": "window"
@@ -62,8 +74,9 @@
 		},
 		"commands": [
 			{
+				"command": "gobook.newGobook",
 				"title": "Gobook: Create a new blank Go Notebook",
-				"command": "gobook.newGobook"
+				"description": "Creates a blank notebook and opens it with Gobook"
 			},
 			{
 				"command": "goNotebookKernel.kernel.restart",
@@ -90,7 +103,7 @@
 		],
 		"notebooks": [
 			{
-				"type": "markdown-notebook",
+				"type": "gobook",
 				"displayName": "Gobook",
 				"priority": "default",
 				"selector": [

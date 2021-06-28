@@ -5,11 +5,11 @@ import "fmt"
 Use shorthand initializers to avoid problems when rerunning cells:
 ```go
 x := 10
-y := 5
+y := 2 
 fmt.Println("x + y =", x + y)
 ```
 ```output
-x + y = 15
+x + y = 12
 ```
 ```go
 x := 10

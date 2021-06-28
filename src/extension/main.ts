@@ -5,7 +5,7 @@ import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdown
 const kernel = new Kernel();
 
 export function activate(context: vscode.ExtensionContext) {
-	const controller = vscode.notebooks.createNotebookController('go-kernel', 'markdown-notebook', 'Go Kernel');
+	const controller = vscode.notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel');
 	controller.supportedLanguages = ['go'];
 	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl);
 	controller.interruptHandler = doc => kernel.interrupt(doc);
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(
-		vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(),
+		vscode.workspace.registerNotebookSerializer('gobook', new MarkdownProvider(),
 			{
 				transientOutputs: false,
 				transientCellMetadata: {
