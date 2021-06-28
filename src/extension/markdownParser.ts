@@ -53,6 +53,7 @@ function isCodeBlockEndLine(line: string): boolean {
 	return !!line.match(/^\s*```/);
 }
 
+const sep = '\n----------------';
 
 export function parseMarkdown(content: string): RawNotebookCell[] {
 	const lines = content.split(/\r?\n/g);
@@ -61,7 +62,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 
 	// Each parse function starts with line i, leaves i on the line after the last line parsed
 	for (; i < lines.length;) {
-		if (lines[i] === outputHeader) {
+		if (lines[i].includes('------')) {
 			i++;
 			continue;
 		}
@@ -158,8 +159,6 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 }
 
 const stringDecoder = new TextDecoder();
-const inputHeader = getConfig().get('headers.input') as string;
-const outputHeader = getConfig().get('headers.output') as string;
 export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellData>): string {
 
 	let result = '';
@@ -172,32 +171,27 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellDat
 		if (cell.kind === vscode.NotebookCellKind.Code) {
 			let outputParsed = "";
 			for (const x of cell.outputs) {
-				if (x.items[0].mime === "text/plain" && x.items[0].data.length > 0) {
+				if (x.items[0].mime === "text/plain" && x.items[0].data.length) {
 					outputParsed += stringDecoder.decode(x.items[0].data);
 				}
 			}
 			const indentation = cell.metadata?.indentation || '';
 			const languageAbbrev = LANG_ABBREVS.get(cell.languageId) ?? cell.languageId;
-			const codePrefix = indentation + '```' + languageAbbrev + '\n';
+			const codePrefix = indentation + '\n```' + languageAbbrev + '\n';
 			const contents = cell.value.split(/\r?\n/g)
 				.map(line => indentation + line)
 				.join('\n');
-			const codeSuffix = '\n' + indentation + '```';
-
-			if (inputHeader.length) {
-				result += `\n${inputHeader}\n`;
-			}
+			const codeSuffix = '\n' + indentation + '```\n';
+			result += sep;
 			result += codePrefix + contents + codeSuffix;
-			if (outputParsed.length) {
-				if (outputHeader.length) {
-					result += `\n${outputHeader}\n`;
-				}
+			if (outputParsed != '' && outputParsed != '\n' && outputParsed.length > 0) {
 				result += '```output\n' + outputParsed;
 				if (outputParsed.slice(-1) != '\n') {
 					result += '\n';
 				}
-				result += '```';
+				result += '```\n';
 			}
+			result += sep;
 		} else {
 			result += cell.value;
 		}
