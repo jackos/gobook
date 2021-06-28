@@ -1,10 +1,5 @@
----
-noteId: "de63ca50d80511ebb1cccb064a2a37bf"
-tags: []
-
----
-
 ## Keep imports in a separate cell
+
 
 
 ----------------
@@ -15,6 +10,7 @@ import "fmt"
 ----------------
 
 ## Use shorthand declarations
+
 
 
 ----------------

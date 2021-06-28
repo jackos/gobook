@@ -53,7 +53,7 @@ function isCodeBlockEndLine(line: string): boolean {
 	return !!line.match(/^\s*```/);
 }
 
-const sep = '\n----------------';
+const sep = '---';
 
 export function parseMarkdown(content: string): RawNotebookCell[] {
 	const lines = content.split(/\r?\n/g);
@@ -62,7 +62,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 
 	// Each parse function starts with line i, leaves i on the line after the last line parsed
 	for (; i < lines.length;) {
-		if (lines[i].includes('------')) {
+		if (lines[i].includes('---')) {
 			i++;
 			continue;
 		}

@@ -14791,13 +14791,13 @@ function isCodeBlockStart(line) {
 function isCodeBlockEndLine(line) {
   return !!line.match(/^\s*```/);
 }
-var sep = "\n----------------";
+var sep = "---";
 function parseMarkdown(content) {
   const lines = content.split(/\r?\n/g);
   let cells = [];
   let i = 0;
   for (; i < lines.length; ) {
-    if (lines[i].includes("------")) {
+    if (lines[i].includes("---")) {
       i++;
       continue;
     }
