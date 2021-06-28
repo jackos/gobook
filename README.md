@@ -50,12 +50,12 @@ Originally was using it as a dependency but needed to merge it into this project
 - Add an option to activate extension with .md or .gobook files
 - Activate extension as default when opening a .gobook file
 - Syntax highlighting
+- Save output of cells to file
+- Reload output when reopening file
 
 ### In Development 
 - Make an icon for .gobook files
-- Save output of cells to file
-- Code completion
+- Code completion / linting
 - Auto format cells
 - Variables explorer
-- Linting
 - Export to PDF
