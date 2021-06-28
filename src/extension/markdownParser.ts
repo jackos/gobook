@@ -63,7 +63,6 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 		const leadingWhitespace = i === 0 ? parseWhitespaceLines(true) : '';
 		const codeBlockMatch = parseCodeBlockStart(lines[i]);
 		if (codeBlockMatch && codeBlockMatch.langId === 'output') {
-			// codeBlockMatch.langId = 'markdown';
 			parseCodeBlock(leadingWhitespace, codeBlockMatch, true);
 		}
 		else if (codeBlockMatch) {
@@ -110,7 +109,9 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 			.map(line => line.replace(new RegExp('^' + codeBlockStart.indentation), ''))
 			.join('\n');
 		const trailingWhitespace = parseWhitespaceLines(false);
-		if (!output) {
+		if (output) {
+			cells[cells.length - 1].outputs = [{ items: [{ data: textEncoder.encode(content), mime: "text/plain" }] }];
+		} else {
 			cells.push({
 				language,
 				content,
@@ -118,9 +119,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 				leadingWhitespace: leadingWhitespace,
 				trailingWhitespace: trailingWhitespace,
 				indentation: codeBlockStart.indentation,
-				outputs: [{ items: [{ data: textEncoder.encode("wow"), mime: "markdown" }] }]
-			}
-			);
+			});
 		}
 	}
 

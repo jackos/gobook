@@ -64,7 +64,8 @@ export function rawToNotebookCellData(data: RawNotebookCell): vscode.NotebookCel
 		kind: data.kind,
 		languageId: data.language,
 		metadata: { leadingWhitespace: data.leadingWhitespace, trailingWhitespace: data.trailingWhitespace, indentation: data.indentation },
-		outputs: [],
+		// outputs: data.outputs,
+		outputs: data.outputs || [],
 		value: data.content
 	};
 }

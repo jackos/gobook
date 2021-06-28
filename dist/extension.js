@@ -14837,15 +14837,16 @@ function parseMarkdown(content) {
     const textEncoder = new import_util.TextEncoder();
     const content2 = lines.slice(startSourceIdx, i - 1).map((line) => line.replace(new RegExp("^" + codeBlockStart.indentation), "")).join("\n");
     const trailingWhitespace = parseWhitespaceLines(false);
-    if (!output) {
+    if (output) {
+      cells[cells.length - 1].outputs = [{ items: [{ data: textEncoder.encode(content2), mime: "text/plain" }] }];
+    } else {
       cells.push({
         language,
         content: content2,
         kind: vscode4.NotebookCellKind.Code,
         leadingWhitespace,
         trailingWhitespace,
-        indentation: codeBlockStart.indentation,
-        outputs: [{ items: [{ data: textEncoder.encode("wow"), mime: "markdown" }] }]
+        indentation: codeBlockStart.indentation
       });
     }
   }
@@ -14977,7 +14978,7 @@ function rawToNotebookCellData(data) {
     kind: data.kind,
     languageId: data.language,
     metadata: { leadingWhitespace: data.leadingWhitespace, trailingWhitespace: data.trailingWhitespace, indentation: data.indentation },
-    outputs: [],
+    outputs: data.outputs || [],
     value: data.content
   };
 }

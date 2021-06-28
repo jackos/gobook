@@ -1,5 +1,16 @@
 # Change Log
 
+## v0.0.12
+Saving cell outputs now working, they persist in the form of a codeblock with output as the code type e.g.
+
+\`\`\`output
+
+x = 10
+
+\`\`\`
+
+The parser then reads them back into the notebook when reloading it
+
 ## v0.0.11
 
 First release with all functionality in a single extension with no dependencies
