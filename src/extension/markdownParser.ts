@@ -171,7 +171,7 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellDat
 		if (cell.kind === vscode.NotebookCellKind.Code) {
 			let outputParsed = "";
 			for (const x of cell.outputs) {
-				if (x.items[0].mime === "text/plain" && x.items[0].data.length) {
+				if (x.items[0].mime.includes("stdout") && x.items[0].data.length) {
 					outputParsed += stringDecoder.decode(x.items[0].data);
 				}
 			}

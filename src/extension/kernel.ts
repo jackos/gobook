@@ -149,7 +149,6 @@ export class Kernel {
         const done = new Promise<endData>((r, j) => (resolve = r));
         const handle = async (msg: ToClient) => {
             const kindCase = msg.getKindCase();
-            console.log(msg);
             if (kindCase === ToClient.KindCase.OUTPUT) {
                 const items = msg.getOutput()!.getContentList().map(c => {
                     let mime = c.getMime();
