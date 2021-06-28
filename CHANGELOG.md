@@ -1,10 +1,19 @@
 # Change Log
 
+## v0.0.11
 
+First release with all functionality in a single extension with no dependencies
+### Working
+- Syntax highlighting for go code
+- .gobook and .md file types interchangeable
+- Open extension automatically when opening file
+### Not working
+- Code completions
+- Linting
+- Saving output to file
+- Formatting cell blocks
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## v0.0.1+
+## v0.0.1 - v0.0.11
 
 Initial release, with ability to open .gobook and .md files while retaining markdown syntax. Only available for VS Code Insiders 1.58.0 due to a bug fix with the newly released notebook API.
 
