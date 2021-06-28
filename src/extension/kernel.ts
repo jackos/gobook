@@ -167,7 +167,7 @@ export class Kernel {
                             }
 
                             // return new vscode.NotebookCellOutputItem(value, 'text/html');
-                            return new vscode.NotebookCellOutputItem(value, 'application/json');
+                            return new vscode.NotebookCellOutputItem(value, mime);
                         });
 
                         exec.appendOutput([new vscode.NotebookCellOutput(items)]);

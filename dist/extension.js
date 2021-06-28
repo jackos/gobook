@@ -14692,7 +14692,7 @@ var _Kernel = class {
                   case "stderr":
                     return vscode3.NotebookCellOutputItem.stderr(value.toString("utf-8"));
                 }
-                return new vscode3.NotebookCellOutputItem(value, "application/json");
+                return new vscode3.NotebookCellOutputItem(value, mime);
               });
               exec.appendOutput([new vscode3.NotebookCellOutput(items)]);
             }

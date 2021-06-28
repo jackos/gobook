@@ -31,20 +31,8 @@
 	"contributes": {
 		"configuration": {
 			"type": "object",
-			"title": "Go Notebook Kernel configuration",
+			"title": "Gobook Kernel configuration",
 			"properties": {
-				"gobook.headers.input": {
-					"description": "Header to place above each input cell when rendering markdown",
-					"type": "string",
-					"scope": "window",
-					"default": "##### *in*"
-				},
-				"gobook.headers.output": {
-					"description": "Header to place above each output cell when rendering markdown",
-					"type": "string",
-					"scope": "window",
-					"default": "##### *out*"
-				},
 				"gobook.go.path": {
 					"description": "Path to `go` executable",
 					"type": "string",
@@ -117,7 +105,7 @@
 			{
 				"id": "gobook",
 				"displayName": "Gobook",
-				"entrypoint": "./out/renderer/index.js",
+				"entrypoint": "./dist/extension.js",
 				"mimeTypes": [
 					"x-application/gobook"
 				]
