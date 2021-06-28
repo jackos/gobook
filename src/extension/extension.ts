@@ -21,7 +21,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(), providerOptions),
 	);
-
 }
 
 class MarkdownProvider implements vscode.NotebookSerializer {

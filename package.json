@@ -3,11 +3,8 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"preview": true,
-	"extensionPack": [
-		"gobookdev.gobook-kernel"
-	],
 	"enableProposedApi": true,
 	"icon": "images/icon.png",
 	"engines": {
@@ -24,7 +21,7 @@
 		"onLanguage:gobook",
 		"onCommand:gobook.newNotebook"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension.js",
 	"capabilities": {
 		"virtualWorkspaces": true,
 		"untrustedWorkspaces": {
@@ -32,10 +29,56 @@
 		}
 	},
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Go Notebook Kernel configuration",
+			"properties": {
+				"goNotebookKernel.go.path": {
+					"description": "Path to `go` executable",
+					"type": "string",
+					"scope": "window"
+				},
+				"goNotebookKernel.kernel.path": {
+					"description": "Path to kernel executable",
+					"type": "string",
+					"scope": "window"
+				},
+				"goNotebookKernel.kernel.module": {
+					"description": "Kernel module",
+					"type": "string",
+					"scope": "window"
+				},
+				"goNotebookKernel.kernel.version": {
+					"description": "Kernel version",
+					"type": "string",
+					"scope": "window"
+				},
+				"goNotebookKernel.kernel.tags": {
+					"description": "Tags to use when building the kernel",
+					"type": "string",
+					"scope": "window"
+				}
+			}
+		},
 		"commands": [
 			{
 				"title": "Gobook: Create a new blank Go Notebook",
 				"command": "gobook.newGobook"
+			},
+			{
+				"command": "goNotebookKernel.kernel.restart",
+				"title": "Go Notebook Kernel: Restart Kernel",
+				"description": "Restart the running instance of the kernel"
+			},
+			{
+				"command": "goNotebookKernel.kernel.stopSession",
+				"title": "Go Notebook Kernel: Stop session",
+				"description": "Stop the kernel session for the current document"
+			},
+			{
+				"command": "goNotebookKernel.kernel.rebuild",
+				"title": "Go Notebook Kernel: Rebuild Kernel",
+				"description": "Rebuild the kernel"
 			}
 		],
 		"startEntries": [
@@ -90,24 +133,44 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "yarn run compile",
-		"compile": "tsc -p ./",
 		"lint": "eslint src --ext ts",
 		"deploy": "npx vsce publish --noVerify",
-		"watch": "tsc -watch -p ./",
+		"watch:test": "tsc -watch -p ./",
 		"pretest": "yarn run compile && yarn run lint",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"compile:extension": "yarn run bundle --sourcemap",
+		"watch:extension": "yarn run bundle --sourcemap --watch",
+		"compile:grpc:js": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/proto --grpc_out=grpc_js:src/proto --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin kernel.proto",
+		"compile:grpc:ts": "grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:src/proto kernel.proto",
+		"compile:grpc": "yarn run compile:grpc:js && yarn run compile:grpc:ts",
+		"bundle": "esbuild ./src/extension/main.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+		"watch": "yarn run watch:extension",
+		"compile": "yarn run compile:extension && yarn run compile:grpc && yarn run bundle --minify",
+		"vscode:prepublish": "yarn run compile"
+	},
+	"dependencies": {
+		"@grpc/grpc-js": "^1.2.12",
+		"google-protobuf": "^3.15.7"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^7.0.2",
-		"@types/node": "^13.11.0",
 		"@typescript-eslint/eslint-plugin": "^2.30.0",
 		"@typescript-eslint/parser": "^2.30.0",
+		"@types/google-protobuf": "^3.7.4",
+		"@types/node": "^14.14.37",
 		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.1.2",
-		"typescript": "^3.8.3",
-		"vscode-test": "^1.3.0"
+		"vscode-test": "^1.3.0",
+		"concurrently": "^6.0.0",
+		"esbuild": "^0.12.9",
+		"grpc": "^1.24.6",
+		"grpc-tools": "^1.11.1",
+		"grpc_tools_node_protoc_ts": "^5.3.0",
+		"json": "^10.0.0",
+		"ovsx": "^0.1.0-next.a9154dc",
+		"typescript": "^4.2.3",
+		"vsce": "^1.94.0"
 	}
 }

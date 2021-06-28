@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { parseMarkdown, writeCellsToMarkdown } from '../../markdownParser';
-import { rawToNotebookCellData } from '../../extension';
+import { parseMarkdown, writeCellsToMarkdown } from '../../extension/markdownParser';
+import { rawToNotebookCellData } from '../../extension/extension';
 
 suite('parseMarkdown', () => {
 	test('markdown cell', () => {

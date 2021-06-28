@@ -13,13 +13,8 @@ fmt.Println("x + y =", x + y)
 ```
 
 ```go
-fmt.Println("Output")
-```
-
-```go
-println("test")
-```
-
-```go
-
+x := []int{0, 1, 2, 3, 4, 5, 20, 50, 60}
+for k, v := range(x)  {
+	fmt.Println(k, v)
+}
 ```
