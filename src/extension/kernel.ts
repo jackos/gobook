@@ -11,10 +11,10 @@ type Cache = { [key: string]: string; };
 
 export class Kernel {
     static readonly executable = 'notebook-kernel';
-    static readonly installAsk = 'The Go notebook kernel is not available';
+    static readonly installAsk = 'The Gobook kernel is not available';
 
     static get module(): string {
-        return getConfig().get('kernel.module') || 'gitlab.com/ethan.reesor/vscode-notebooks/go-kernel/cmd/notebook-kernel';
+        return getConfig().get('kernel.module') || 'github.com/gobookdev/gobook/cmd/notebook-kernel';
     }
 
     static get version(): string {
@@ -142,7 +142,7 @@ export class Kernel {
 
     private async execute(session: Session, exec: vscode.NotebookCellExecution) {
         exec.start();
-        exec.clearOutput();
+        await exec.clearOutput();
         this.diagnostics.set(exec.cell.document.uri, []);
         type endData = { success: boolean; };
         let resolve: (_: endData) => void;

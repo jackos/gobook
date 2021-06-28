@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/gobookdev/gobook/src/proto"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
-	"gitlab.com/ethan.reesor/vscode-notebooks/go-kernel/src/proto"
 	grpc "google.golang.org/grpc"
 )
 

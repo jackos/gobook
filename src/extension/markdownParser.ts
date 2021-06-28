@@ -3,10 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { StringDecoder } from 'string_decoder';
 import { TextDecoder, TextEncoder } from 'util';
 import * as vscode from 'vscode';
-import { getConfig } from './config';
 
 export interface RawNotebookCell {
 	indentation?: string;

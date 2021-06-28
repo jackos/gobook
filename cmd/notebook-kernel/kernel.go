@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"gitlab.com/ethan.reesor/vscode-notebooks/go-kernel/src/proto"
+	"github.com/gobookdev/gobook/src/proto"
 )
 
 type kernel struct {
