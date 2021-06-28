@@ -134,7 +134,7 @@
 	},
 	"scripts": {
 		"compile:extension": "yarn run bundle --sourcemap",
-		"watch:extension": "yarn run bundle --sourcemap --watch",
+		"watch:extension": "yarn run bundle --sourcemap",
 		"compile:grpc:js": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/proto --grpc_out=grpc_js:src/proto --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin kernel.proto",
 		"compile:grpc:ts": "grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:src/proto kernel.proto",
 		"compile:grpc": "yarn run compile:grpc:js && yarn run compile:grpc:ts",

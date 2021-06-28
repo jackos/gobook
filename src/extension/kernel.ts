@@ -166,7 +166,8 @@ export class Kernel {
                                     return vscode.NotebookCellOutputItem.stderr(value.toString('utf-8'));
                             }
 
-                            return new vscode.NotebookCellOutputItem(value, 'text/html');
+                            // return new vscode.NotebookCellOutputItem(value, 'text/html');
+                            return new vscode.NotebookCellOutputItem(value, 'application/json');
                         });
 
                         exec.appendOutput([new vscode.NotebookCellOutput(items)]);

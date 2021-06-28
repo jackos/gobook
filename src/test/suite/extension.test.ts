@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { parseMarkdown, writeCellsToMarkdown } from '../../extension/markdownParser';
-import { rawToNotebookCellData } from '../../extension/extension';
+import { rawToNotebookCellData } from '../../extension/main';
 
 suite('parseMarkdown', () => {
 	test('markdown cell', () => {
@@ -113,7 +113,7 @@ suite('parseMarkdown', () => {
 suite('writeMarkdown', () => {
 	function testWriteMarkdown(markdownStr: string) {
 		const cells = parseMarkdown(markdownStr)
-			.map(rawToNotebookCellData);
+			.map(rawToNotebookCellData) as readonly vscode.NotebookCellData[];
 		assert.strictEqual(writeCellsToMarkdown(cells), markdownStr);
 	}
 
@@ -131,7 +131,7 @@ suite('writeMarkdown', () => {
 
 		test('append markdown cells', () => {
 			const cells = parseMarkdown(`# hello`)
-				.map(rawToNotebookCellData);
+				.map(rawToNotebookCellData) as vscode.NotebookCellData[];
 			cells.push(<vscode.NotebookCellData>{
 				kind: vscode.NotebookCellKind.Markup,
 				languageId: 'markdown',
@@ -152,7 +152,7 @@ suite('writeMarkdown', () => {
 
 		test('append code cells', () => {
 			const cells = parseMarkdown('```ts\nsome code\n```')
-				.map(rawToNotebookCellData);
+				.map(rawToNotebookCellData) as vscode.NotebookCellData[];
 			cells.push(<vscode.NotebookCellData>{
 				kind: vscode.NotebookCellKind.Code,
 				languageId: 'typescript',
@@ -173,7 +173,7 @@ suite('writeMarkdown', () => {
 
 		test('insert cells', () => {
 			const cells = parseMarkdown('# Hello\n\n## Header 2')
-				.map(rawToNotebookCellData);
+				.map(rawToNotebookCellData) as vscode.NotebookCellData[];
 			cells.splice(1, 0, <vscode.NotebookCellData>{
 				kind: vscode.NotebookCellKind.Code,
 				languageId: 'typescript',

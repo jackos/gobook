@@ -3,6 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { StringDecoder } from 'string_decoder';
+import { TextDecoder, TextEncoder } from 'util';
 import * as vscode from 'vscode';
 
 export interface RawNotebookCell {
@@ -12,13 +14,14 @@ export interface RawNotebookCell {
 	language: string;
 	content: string;
 	kind: vscode.NotebookCellKind;
+	outputs?: [any];
 }
 
 const LANG_IDS = new Map([
 	['bat', 'batch'],
 	['js', 'javascript'],
 	['ts', 'typescript'],
-	['go', 'go']
+	['go', 'go'],
 ]);
 const LANG_ABBREVS = new Map(
 	Array.from(LANG_IDS.keys()).map(k => [LANG_IDS.get(k), k])
@@ -49,6 +52,7 @@ function isCodeBlockEndLine(line: string): boolean {
 	return !!line.match(/^\s*```/);
 }
 
+
 export function parseMarkdown(content: string): RawNotebookCell[] {
 	const lines = content.split(/\r?\n/g);
 	let cells: RawNotebookCell[] = [];
@@ -58,12 +62,17 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 	for (; i < lines.length;) {
 		const leadingWhitespace = i === 0 ? parseWhitespaceLines(true) : '';
 		const codeBlockMatch = parseCodeBlockStart(lines[i]);
-		if (codeBlockMatch) {
+		if (codeBlockMatch && codeBlockMatch.langId === 'output') {
+			// codeBlockMatch.langId = 'markdown';
+			parseCodeBlock(leadingWhitespace, codeBlockMatch, true);
+		}
+		else if (codeBlockMatch) {
 			parseCodeBlock(leadingWhitespace, codeBlockMatch);
 		} else {
 			parseMarkdownParagraph(leadingWhitespace);
 		}
 	}
+
 
 	function parseWhitespaceLines(isFirst: boolean): string {
 		let start = i;
@@ -82,7 +91,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 		return '\n'.repeat(numWhitespaceLines);
 	}
 
-	function parseCodeBlock(leadingWhitespace: string, codeBlockStart: ICodeBlockStart): void {
+	function parseCodeBlock(leadingWhitespace: string, codeBlockStart: ICodeBlockStart, output: boolean = false): void {
 		const language = LANG_IDS.get(codeBlockStart.langId) || codeBlockStart.langId;
 		const startSourceIdx = ++i;
 		while (true) {
@@ -96,19 +105,23 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 
 			i++;
 		}
-
+		const textEncoder = new TextEncoder();
 		const content = lines.slice(startSourceIdx, i - 1)
 			.map(line => line.replace(new RegExp('^' + codeBlockStart.indentation), ''))
 			.join('\n');
 		const trailingWhitespace = parseWhitespaceLines(false);
-		cells.push({
-			language,
-			content,
-			kind: vscode.NotebookCellKind.Code,
-			leadingWhitespace: leadingWhitespace,
-			trailingWhitespace: trailingWhitespace,
-			indentation: codeBlockStart.indentation
-		});
+		if (!output) {
+			cells.push({
+				language,
+				content,
+				kind: vscode.NotebookCellKind.Code,
+				leadingWhitespace: leadingWhitespace,
+				trailingWhitespace: trailingWhitespace,
+				indentation: codeBlockStart.indentation,
+				outputs: [{ items: [{ data: textEncoder.encode("wow"), mime: "markdown" }] }]
+			}
+			);
+		}
 	}
 
 	function parseMarkdownParagraph(leadingWhitespace: string): void {
@@ -140,6 +153,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 	return cells;
 }
 
+const stringDecoder = new TextDecoder();
 export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellData>): string {
 	let result = '';
 	for (let i = 0; i < cells.length; i++) {
@@ -149,6 +163,12 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellDat
 		}
 
 		if (cell.kind === vscode.NotebookCellKind.Code) {
+			let outputParsed = "";
+			for (const x of cell.outputs) {
+				if (x.items[0].mime === "text/plain" && x.items[0].data.length > 0) {
+					outputParsed += stringDecoder.decode(x.items[0].data);
+				}
+			}
 			const indentation = cell.metadata?.indentation || '';
 			const languageAbbrev = LANG_ABBREVS.get(cell.languageId) ?? cell.languageId;
 			const codePrefix = indentation + '```' + languageAbbrev + '\n';
@@ -158,6 +178,13 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellDat
 			const codeSuffix = '\n' + indentation + '```';
 
 			result += codePrefix + contents + codeSuffix;
+			if (outputParsed.length > 0) {
+				result += '\n```output\n' + outputParsed;
+				if (outputParsed.slice(-1) != '\n') {
+					result += '\n';
+				}
+				result += '```';
+			}
 		} else {
 			result += cell.value;
 		}

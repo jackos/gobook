@@ -46,11 +46,16 @@ Originally was using it as a dependency but needed to merge it into this project
 
 
 ## Development Status
-- [ x ] Add an option to activate extension with .md or .gobook files
-- [ x ] Activate extension as default when opening a .gobook file
-- [   ] Make an icon for .gobook files
-- [   ] Save output of cells to file
-- [ x ] Syntax highlighting
-- [   ] Code completion
-- [   ] Auto format cells
-- [   ] Export to PDF
+### Working
+- Add an option to activate extension with .md or .gobook files
+- Activate extension as default when opening a .gobook file
+- Syntax highlighting
+
+### In Development 
+- Make an icon for .gobook files
+- Save output of cells to file
+- Code completion
+- Auto format cells
+- Variables explorer
+- Linting
+- Export to PDF

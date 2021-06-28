@@ -4,15 +4,6 @@ import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdown
 
 const kernel = new Kernel();
 
-const providerOptions = {
-	transientMetadata: {
-		runnable: true,
-		editable: true,
-		custom: true,
-	},
-	transientOutputs: true
-};
-
 export function activate(context: vscode.ExtensionContext) {
 	const controller = vscode.notebooks.createNotebookController('go-kernel', 'markdown-notebook', 'Go Kernel');
 	controller.supportedLanguages = ['go'];
@@ -33,7 +24,15 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(
-		vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(), providerOptions),
+		vscode.workspace.registerNotebookSerializer('markdown-notebook', new MarkdownProvider(),
+			{
+				transientOutputs: false,
+				transientCellMetadata: {
+					inputCollapsed: true,
+					outputCollapsed: true,
+				}
+			}
+		),
 	);
 }
 
@@ -124,5 +123,6 @@ const ALL_LANGUAGES = [
 	'xml',
 	'xsl',
 	'yaml',
-	'github-issues'
+	'github-issues',
+	'output'
 ];
