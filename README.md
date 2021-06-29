@@ -47,6 +47,7 @@ Originally was using it as a dependency but ultimately merged it into this proje
 - Code completion / linting
 - Auto format cells
 - Variables explorer by saving state
+- Rewrite Go kernel removing protocol buffers to make extension more lightweight
 - Export to PDF
 
 ### Future development
