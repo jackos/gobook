@@ -1,4 +1,19 @@
 # Change Log
+## v0.0.15
+Formatting now in this form: 
+
+---
+```go
+x := 10
+println(x)
+```
+```output
+10
+```
+---
+
+
+This makes it clear what the input / output is without cluttering when viewing the markdown file. Experimented with many different ways, this looked the most elegant to me.
 
 ## v0.0.12
 Saving cell outputs now working, they persist in the form of a codeblock with output as the code type e.g.
