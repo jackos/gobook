@@ -61,5 +61,11 @@ Originally was using it as a dependency but ultimately merged it into this proje
 - var keyword has issues when rerunning cells
 - Have to run imports in separate cells
 - Rerunning imports not handled gracefully
+- Working on swapping the yaegi interpreter with gomacro
+
+### Yaegi differences to compiled Go
+- Checking a map key doesn't work eg: x, ok := map1[0]
+- Initializing a map key with ++ doesn't work eg: points["lakers"]++
+
 
 [If you have any other issues please submit here](https://github.com/gobookdev/gobook/issues)
