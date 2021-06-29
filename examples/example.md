@@ -1,28 +1,18 @@
-Test markdown standard text
+Keep imports in separate cell
 
 ---
 ```go
 import "fmt"
 ```
 ---
-Use shorthand initializers to avoid problems when rerunning cells:
+Use shorthand declarations
 
 ---
 ```go
-x := 10
-y := 2 
-fmt.Println("x + y =", x + y)
+x := []int{10, 20, 30}
+fmt.Println(x)
 ```
 ```output
-x + y = 12
-```
----
----
-```go
-x := 10
-println(x)
-```
-```output
-10
+[10 20 30]
 ```
 ---

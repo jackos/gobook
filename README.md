@@ -12,21 +12,12 @@ This extension currently only works on VS Code Insiders as it's reliant on a fix
 
 ## Usage Instructions
 
-Make sure to use shorthand initializers and keep your imports in seperate cells:
+Make sure to use shorthand initializers and keep your imports in separate cells.
 
-![usage](images/usage.png)
+Here is an example showing the source code in markdown format, and changing between a normal text editor and the Gobook editor while retaining outputs:
 
-Files will save with standard markdown code blocks e.g.
+![usage](images/example.gif)
 
-![md](images/md.png)
-
-You can save your .gobook files as .md files and they'll behave like markdown e.g. they'll render on Github with syntax highlighting.
-
-Alternatively you can run go code directly in a .md or .markdown file:
-
-![rightclick](images/rightclick.png)
-
-![select](images/select.png)
 
 Use the command pallette to restart kernel
 ```markdown
