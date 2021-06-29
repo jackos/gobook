@@ -7,6 +7,13 @@
 	"preview": true,
 	"enableProposedApi": true,
 	"icon": "images/icon.png",
+	"keywords": [
+		"go",
+		"golang",
+		"notebook",
+		"gobook",
+		"notebooks"
+	],
 	"engines": {
 		"vscode": "^1.58.0"
 	},
