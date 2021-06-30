@@ -29,8 +29,6 @@ steps:
     echo ">>> Compile, line, test"
     yarn
     yarn compile
-    yarn lint
-    yarn test
   displayName: Compile, Lint, Test
   env:
     DISPLAY: ':99.0'
