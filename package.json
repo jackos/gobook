@@ -5,7 +5,7 @@
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
 	"version": "0.0.19",
 	"preview": true,
-	"enableProposedApi": false,
+	"enableProposedApi": true,
 	"icon": "images/icon.png",
 	"keywords": [
 		"go",
@@ -26,7 +26,7 @@
 	"activationEvents": [
 		"onNotebook:gobook",
 		"onLanguage:gobook",
-		"onCommand:gobook.newNotebook"
+		"onCommand:gobook.new"
 	],
 	"main": "./dist/extension.js",
 	"capabilities": {
@@ -74,18 +74,18 @@
 				"description": "Creates a blank notebook and opens it with Gobook"
 			},
 			{
-				"command": "goNotebookKernel.kernel.restart",
-				"title": "Go Notebook Kernel: Restart Kernel",
+				"command": "gobook.kernel.restart",
+				"title": "Gobook: Restart Kernel",
 				"description": "Restart the running instance of the kernel"
 			},
 			{
-				"command": "goNotebookKernel.kernel.stopSession",
-				"title": "Go Notebook Kernel: Stop session",
+				"command": "gobook.kernel.stopSession",
+				"title": "Gobook: Stop Kernel Session",
 				"description": "Stop the kernel session for the current document"
 			},
 			{
 				"command": "goNotebookKernel.kernel.rebuild",
-				"title": "Go Notebook Kernel: Rebuild Kernel",
+				"title": "Gobook: Rebuild Kernel",
 				"description": "Rebuild the kernel"
 			}
 		],
@@ -93,7 +93,7 @@
 			{
 				"title": "Gobook",
 				"description": "Run Go code interactively in a markdown format",
-				"command": "gobook.newGobook"
+				"command": "gobook.new"
 			}
 		],
 		"notebooks": [

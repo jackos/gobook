@@ -1,13 +1,4 @@
 ---
-noteId: "66d98960d88311eba2951d87aa1d09e3"
-tags: []
-
----
-
-noteId: "185f9f00d88211eb84a253a1376a9900"
-tags: []
-
----
 ```go
 import(
 	"context"
@@ -18,8 +9,6 @@ import(
 )
 ```
 ---
-
-
 ---
 ```go
 client := &http.Client{
@@ -27,7 +16,7 @@ client := &http.Client{
 }
 
 req, err := http.NewRequestWithContext(context.Background(),
-	http.MethodGet, "https://jsonplaceholder.typicode.com/todos/1", nil)
+	http.MethodGet, "https://jsonplaceholder.typicode.com/todos/4", nil)
 if err != nil {
 	panic(err)
 }
@@ -60,7 +49,8 @@ fmt.Printf("%+v\n", data)
 ```
 ```output
 application/json; charset=utf-8
-{UserID:1 ID:1 Title:delectus aut autem Completed:false}
+{UserID:1 ID:4 Title:et porro tempora Completed:true}
 ```
 ---
+
 

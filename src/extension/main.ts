@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl);
 	controller.interruptHandler = doc => kernel.interrupt(doc);
 
-	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.restart', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.restart', () => {
 		kernel.kill('SIGTERM');
 	}));
 
@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 		await Kernel.install(false);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.newGobook', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('gobook.new', async () => {
 		const newNotebook = await vscode.workspace.openNotebookDocument('gobook',
 			new vscode.NotebookData([
 				new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '', 'gobook')
@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showNotebookDocument(newNotebook);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.stopSession', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.stopSession', async () => {
 		const uri = vscode.window.activeTextEditor?.document?.uri;
 		if (uri) kernel.stopSession(uri);
 	}));

@@ -16,7 +16,7 @@ steps:
 
 - task: NodeTool@0
   inputs:
-    versionSpec: '12.x'
+    versionSpec: '14.x'
   displayName: 'Install Node.js'
 
 - bash: |
@@ -27,14 +27,13 @@ steps:
 
 - bash: |
     echo ">>> Compile, line, test"
-    yarn
-    yarn compile
+    npm i
+    npm run deploy -- -p $(VSCODE_MARKETPLACE_TOKEN)
   displayName: Compile, Lint, Test
   env:
     DISPLAY: ':99.0'
 
 - bash: |
     echo ">>> Publish"
-    npm run deploy -- -p $(VSCODE_MARKETPLACE_TOKEN)
   displayName: Publish
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
