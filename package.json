@@ -3,9 +3,9 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.0.17",
+	"version": "0.0.19",
 	"preview": true,
-	"enableProposedApi": true,
+	"enableProposedApi": false,
 	"icon": "images/icon.png",
 	"keywords": [
 		"go",
@@ -149,7 +149,11 @@
 		"bundle": "esbuild ./src/extension/main.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
 		"watch": "yarn run watch:extension",
 		"compile": "yarn run compile:extension && yarn run compile:grpc && yarn run bundle --minify",
-		"vscode:prepublish": "yarn run compile"
+		"vscode:prepublish": "yarn run compile",
+		"lint": "eslint src --ext ts",
+		"deploy": "npx vsce publish --noVerify",
+		"pretest": "yarn run compile && yarn run lint",
+		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
 		"@grpc/grpc-js": "^1.2.12",
