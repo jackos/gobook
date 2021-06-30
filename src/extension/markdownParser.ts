@@ -159,7 +159,7 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 const stringDecoder = new TextDecoder();
 export function writeCellsToMarkdown(cells: ReadonlyArray<vscode.NotebookCellData>): string {
 
-	let result = '';
+	let result = '\n';
 	for (let i = 0; i < cells.length; i++) {
 		const cell = cells[i];
 		if (i === 0) {

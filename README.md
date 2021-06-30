@@ -9,7 +9,6 @@ This extension currently only works on VS Code Insiders as it's reliant on a fix
 - Extension will automatically start when opening a .gobook file
 - To use it with a .md or .markdown file, right click on the file and press 'Open With' then 'Gobook'
 
-
 ## Usage Instructions
 
 Make sure to use shorthand initializers and keep your imports in separate cells.
@@ -26,6 +25,9 @@ Go Notebook Kernel: Restart Kernel
 ```
 
 As the notebook is using the new Notebook API, there are many keyboard shortcuts available in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
+
+## Output Examples
+Click the Markdown files [in the repo here](https://github.com/gobookdev/gobook-examples) to see how the markdown formats after running cells and saving.
 
 ## Kernel
 The kernel being used originated from [Go Notebook Kernel](https://marketplace.visualstudio.com/items?itemName=ethan-reesor.go-notebook-kernel) by Ethan Reesor, which uses [Yaegi](https://github.com/traefik/yaegi) under the hood.
@@ -69,10 +71,10 @@ The interpreter being used is Yaegi, working on using gomacro instead as it appe
 
 ### Not working with Yaegi Interpreter
 Checking a map key 
-```
+```go
 x, ok := map1[0]
 ```
 Initializing a map key with ++ 
-```
+```go
 points["lakers"]++
 ```
