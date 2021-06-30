@@ -61,11 +61,18 @@ Originally was using it as a dependency but ultimately merged it into this proje
 - var keyword has issues when rerunning cells
 - Have to run imports in separate cells
 - Rerunning imports not handled gracefully
-- Working on swapping the yaegi interpreter with gomacro
-
-### Yaegi differences to compiled Go
-- Checking a map key doesn't work eg: x, ok := map1[0]
-- Initializing a map key with ++ doesn't work eg: points["lakers"]++
-
 
 [If you have any other issues please submit here](https://github.com/gobookdev/gobook/issues)
+
+## Swapping Interpreter
+The interpreter being used is Yaegi, working on using gomacro instead as it appears to be more 1:1 with compiled Go.
+
+### Not working with Yaegi Interpreter
+Checking a map key 
+```
+x, ok := map1[0]
+```
+Initializing a map key with ++ 
+```
+points["lakers"]++
+```
