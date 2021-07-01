@@ -1,4 +1,9 @@
 # Change Log
+
+## v0.0.20
+Pipeline and new notebook working. Removed new notebook until VS Code 1.58 is released, as the proposed API doesn't allow it to work in a production environment. 
+Git hash to restore functionality later: 98ee7dbeb14aca3a488bc43ae8e07deca44ed68
+
 ## v0.0.15
 Formatting now in this form: 
 

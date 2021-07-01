@@ -25,8 +25,7 @@
 	],
 	"activationEvents": [
 		"onNotebook:gobook",
-		"onLanguage:gobook",
-		"onCommand:gobook.new"
+		"onLanguage:gobook"
 	],
 	"main": "./dist/extension.js",
 	"capabilities": {
@@ -68,11 +67,6 @@
 			}
 		},
 		"commands": [
-			{
-				"command": "gobook.new",
-				"title": "Gobook: Create a new blank Go Notebook",
-				"description": "Creates a blank notebook and opens it with Gobook"
-			},
 			{
 				"command": "gobook.kernel.restart",
 				"title": "Gobook: Restart Kernel",
