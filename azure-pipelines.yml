@@ -4,6 +4,9 @@ trigger:
   tags:
     include: ['*']
 
+variables:
+- group: tokens
+
 strategy:
   matrix:
     linux:
@@ -28,7 +31,7 @@ steps:
 - bash: |
     echo ">>> Compile, line, test"
     npm i
-    npm run deploy -- -p $(VSCODE_MARKETPLACE_TOKEN)
+    npm run deploy -- -p $(MARKETPLACE_TOKEN)
   displayName: Compile, Lint, Test
   env:
     DISPLAY: ':99.0'
