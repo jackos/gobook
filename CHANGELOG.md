@@ -1,4 +1,6 @@
 # Change Log
+## v0.0.21
+Fix problem with rendering blank lines as code cells
 
 ## v0.0.20
 Pipeline and new notebook working. Removed new notebook until VS Code 1.58 is released, as the proposed API doesn't allow it to work in a production environment. 

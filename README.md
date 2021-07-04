@@ -1,3 +1,5 @@
+
+
 # Gobook: Go Notebook VS Code Extension
 
 ## Warning!
@@ -19,10 +21,14 @@ Here is an example showing the source code in markdown format, and changing betw
 
 
 Use the command pallette to restart kernel
+---
+---
 ```markdown
 ctrl+shift+p
 Go Notebook Kernel: Restart Kernel
 ```
+---
+
 
 As the notebook is using the new Notebook API, there are many keyboard shortcuts available in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
 
@@ -56,6 +62,7 @@ Originally was using it as a dependency but ultimately merged it into this proje
 - Add support to execute JS, TS and Python code cells with additional kernels
 - Shared state between all languages, i.e. initialize x in Python and use it in Go
 - API for adding any language 
+- If any code is run that requires the standard library, add the import to the first block and execute it
 
 ## Known Issues
 ### Being worked on
@@ -71,10 +78,17 @@ The interpreter being used is Yaegi, working on using gomacro instead as it appe
 
 ### Not working with Yaegi Interpreter
 Checking a map key 
+
+---
 ```go
 x, ok := map1[0]
 ```
+---
 Initializing a map key with ++ 
+
+---
 ```go
 points["lakers"]++
 ```
+---
+

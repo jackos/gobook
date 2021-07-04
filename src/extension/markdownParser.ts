@@ -62,8 +62,8 @@ export function parseMarkdown(content: string): RawNotebookCell[] {
 	let i = 0;
 
 	// Each parse function starts with line i, leaves i on the line after the last line parsed
-	for (; i < lines.length;) {
-		if (lines[i].includes('---')) {
+	while (i < lines.length) {
+		if (lines[i].includes('---') || lines[i] === "\n" || lines[i].length === 0) {
 			i++;
 			continue;
 		}
