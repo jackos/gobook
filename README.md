@@ -1,10 +1,5 @@
 
-
 # Gobook: Go Notebook VS Code Extension
-
-## Warning!
-This extension currently only works on VS Code Insiders as it's reliant on a fix:
-[Issue 121456](https://github.com/microsoft/vscode/issues/121456). Expect it to be stable for the July release.
 
 ## Install Instructions
 - Install the extension
@@ -23,13 +18,12 @@ Here is an example showing the source code in markdown format, and changing betw
 Use the command pallette to restart kernel
 ---
 ---
+---
 ```markdown
 ctrl+shift+p
 Go Notebook Kernel: Restart Kernel
 ```
 ---
-
-
 As the notebook is using the new Notebook API, there are many keyboard shortcuts available in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
 
 ## Output Examples
@@ -91,4 +85,3 @@ Initializing a map key with ++
 points["lakers"]++
 ```
 ---
-

@@ -31,17 +31,15 @@ export function activate(context: vscode.ExtensionContext) {
 		if (uri) kernel.stopSession(uri);
 	}));
 
-	context.subscriptions.push(
-		vscode.workspace.registerNotebookSerializer('gobook', new MarkdownProvider(),
-			{
-				transientOutputs: false,
-				transientCellMetadata: {
-					inputCollapsed: true,
-					outputCollapsed: true,
-				}
-			}
-		),
-	);
+	const notebookSettings = {
+		transientOutputs: false,
+		transientCellMetadata: {
+			inputCollapsed: true,
+			outputCollapsed: true,
+		}
+	};
+
+	context.subscriptions.push(vscode.workspace.registerNotebookSerializer('gobook', new MarkdownProvider(), notebookSettings));
 }
 
 export function deactivate() {
