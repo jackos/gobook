@@ -31,6 +31,7 @@ export class Kernel {
     }
 
     static async install(ask = true) {
+        Kernel.output.appendLine("Installing kernel")
         this.goTool().install(ask ? this.installAsk : void 0)
     }
 
@@ -38,7 +39,10 @@ export class Kernel {
         return this.goTool().launch(['tcp', 'localhost:'], this.installAsk)
     }
 
+    private connectTo: number | undefined
+
     constructor() {
+        // this.connectTo = 12345
     }
 
     label = 'Go Kernel';
