@@ -1,5 +1,5 @@
-module github.com/jackos/gokernel
+module github.com/gobookdev/gobook/cmd/gokernel
 
 go 1.16
 
-require golang.org/x/tools v0.1.5 // indirect
+require golang.org/x/tools v0.1.5

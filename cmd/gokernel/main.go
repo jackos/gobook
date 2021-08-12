@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -37,7 +36,7 @@ func (p *Page) save() error {
 }
 
 func run(filename string) (*Page, error) {
-	out, err := exec.Command("go", "run", filepath.Join(filename)).Output()
+	out, err := exec.Command("go", "run", filepath.Join(filename)).CombinedOutput()
 	if err != nil {
 		fmt.Fprint(os.Stderr, err)
 	}
@@ -47,17 +46,15 @@ func run(filename string) (*Page, error) {
 func handler(w http.ResponseWriter, r *http.Request) {
 	b := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(b)
-	if err == io.EOF {
+	if err != nil {
 		log.Println("Parsed message")
-	} else if err != nil {
-		log.Println("Error reading request body", err)
 	}
-	p1 := &Page{File: "subProgram/main.go", Body: b}
+	p1 := &Page{File: "/home/jacko/main.go", Body: b}
 	err = p1.save()
 	if err != nil {
 		log.Println("Failed to save program:", err)
 	}
-	result, err := run("subProgram/main.go")
+	result, err := run("/home/jacko/main.go")
 	if err != nil {
 		log.Println("Could not execute program:", err)
 	}
@@ -69,5 +66,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":5250", nil))
 }
