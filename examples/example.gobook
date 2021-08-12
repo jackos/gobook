@@ -1,14 +1,3 @@
-Test markdown standard text
-
----
-```go
-import "fmt"
-```
----
-Use shorthand initializers to avoid problems when rerunning cells:
-
-
-
 ---
 ```go
 x := 10

@@ -1,14 +1,11 @@
 import vscode = require('vscode')
 import grpc = require('@grpc/grpc-js')
 import { ChildProcess } from 'child_process'
-import { KernelClient } from '../proto/kernel_grpc_pb'
-import { EvaluateRequest, PromptResponse, ToClient, ToServer, CacheResponse, CancelEvaluate } from '../proto/kernel_pb'
 import { getConfig } from './config'
 import { GoTool, waitForProc } from './tools'
 import fetch, { Request } from 'node-fetch'
 import { TextDecoder, TextEncoder } from 'util'
 
-type Session = grpc.ClientDuplexStream<ToServer, ToClient>
 type Cache = { [key: string]: string }
 
 export class Kernel {
@@ -53,7 +50,6 @@ export class Kernel {
     supportedLanguages = ['go'];
 
     private proc: ChildProcess | undefined
-    private kernel: KernelClient | undefined
     private sessions = new Map<vscode.Uri, Session>();
     private cache = new Map<vscode.Uri, Cache>();
     private diagnostics = vscode.languages.createDiagnosticCollection();
