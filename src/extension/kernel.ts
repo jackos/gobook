@@ -1,10 +1,9 @@
 import vscode = require('vscode')
-import grpc = require('@grpc/grpc-js')
 import { ChildProcess } from 'child_process'
 import { getConfig } from './config'
-import { GoTool, waitForProc } from './tools'
-import fetch, { Request } from 'node-fetch'
-import { TextDecoder, TextEncoder } from 'util'
+import { GoTool } from './tools'
+import fetch from 'node-fetch'
+import { TextEncoder } from 'util'
 
 type Cache = { [key: string]: string }
 
@@ -39,10 +38,7 @@ export class Kernel {
         return this.goTool().launch(['tcp', 'localhost:'], this.installAsk)
     }
 
-    private connectTo: number | undefined
-
     constructor() {
-        // this.connectTo = 12345
     }
 
     label = 'Go Kernel';
@@ -50,9 +46,7 @@ export class Kernel {
     supportedLanguages = ['go'];
 
     private proc: ChildProcess | undefined
-    private sessions = new Map<vscode.Uri, Session>();
-    private cache = new Map<vscode.Uri, Cache>();
-    private diagnostics = vscode.languages.createDiagnosticCollection();
+    private sessions = new Map();
 
     kill(signal?: NodeJS.Signals | number) {
         const sessions = Array.from(this.sessions.values())
@@ -66,7 +60,6 @@ export class Kernel {
 
     interrupt(document: vscode.NotebookDocument): void {
         const session = this.sessions.get(document.uri)
-        if (session) session.write(new ToServer().setCancel(new CancelEvaluate()))
     }
 
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
@@ -106,8 +99,6 @@ export class Kernel {
             // Tear down the Go process on exit
             this.proc.on('exit', () => {
                 this.proc = void 0
-                this.kernel = void 0
-
                 // cancel and remove all sessions
                 for (const session of this.sessions.values())
                     session.cancel()
@@ -118,7 +109,7 @@ export class Kernel {
         }
     }
 
-    private async execute(session: Session, exec: vscode.NotebookCellExecution) {
+    private async execute(_: any, exec: vscode.NotebookCellExecution) {
         exec.start()
         exec.clearOutput()
         const cellInput = exec.cell.document.getText()

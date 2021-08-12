@@ -72,7 +72,7 @@ export class GoTool {
         public readonly module: string,
         public readonly version: string,
         private readonly output?: vscode.OutputChannel,
-    ) {}
+    ) { }
 
     get config() {
         const value = getConfig()
@@ -88,7 +88,7 @@ export class GoTool {
                 await assertCanAccess(goCmd, X_OK, new Error(`'${goCmd}' cannot be executed`))
                 return goCmd
             }
-    
+
             if (!await isCmd('go', '--version'))
                 throw new Error(`Cannot find 'go'. Please add 'go' to the PATH or configure 'goNotebookKernel.go.path'.`)
             return 'go'
@@ -106,12 +106,12 @@ export class GoTool {
                 await assertCanAccess(kernelPath, X_OK, new Error(`'${kernelPath}' cannot be executed`))
                 return kernelPath
             }
-    
+
             const goBin = (await readCmd("`go env GOBIN`", `${await this.goCmd} env GOBIN`)).trim()
             const goBinPath = path.join(goBin, this.name)
             if (goBin.length && await canAccess(goBinPath, F_OK | X_OK))
                 return goBinPath
-    
+
             const goPath = (await readCmd("`go env GOPATH`", `${await this.goCmd} env GOPATH`)).trim()
             const goPathPath = path.join(goPath.split(';')[0], 'bin', this.name)
             if (goPath.length && await canAccess(goPathPath, F_OK | X_OK))
@@ -148,7 +148,7 @@ export class GoTool {
 
         const path = await this.path
         if (path) return path
-        
+
         vscode.window.showErrorMessage('Failed to install kernel')
     }
 
