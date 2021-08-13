@@ -116,11 +116,23 @@ export class Kernel {
         exec.start()
         exec.clearOutput()
         const cellInput = exec.cell.document.getText()
-        Kernel.output.appendLine(JSON.stringify(exec.cell.document.uri.fragment, null, 2))
-        const result = await fetch("http://127.0.0.1:5250", {
+        const res = await fetch("http://127.0.0.1:5250", {
             method: 'POST',
-            body: `// cell ${exec.cell.document.uri.fragment}\n${cellInput}`
+            body: `// cell ${exec.cell.document.uri.fragment.substring(5)}\n${cellInput}`
         }).then(res => res.text())
+        let writeLine = false
+        let result = ""
+        for (const line of res.split("\n")) {
+            if (line === "end-output") {
+                break
+            }
+            if (writeLine) {
+                result += line
+            }
+            if (line === "start-output") {
+                writeLine = true
+            }
+        }
         Kernel.output.appendLine(result)
         var u8 = new TextEncoder().encode(result)
         const x = new vscode.NotebookCellOutputItem(u8, "text/plain")

@@ -47,7 +47,9 @@ func (p *Page) save(original []byte) error {
 		if start == nil {
 			i := endRE.FindIndex(original)
 			fmt.Fprint(&buf, string(original[:i[0]]))
+			fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
 			fmt.Fprint(&buf, "\n"+string(p.Body))
+			fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
 			fmt.Fprint(&buf, "\n\n"+string(original[i[0]:]))
 		} else {
 			// If get a match, replace old input with new one
@@ -60,15 +62,25 @@ func (p *Page) save(original []byte) error {
 				end[0] = end[0] + start[1]
 			}
 			fmt.Fprint(&buf, string(original[:start[0]]))
+			fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
 			fmt.Fprint(&buf, string(p.Body))
+			fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
 			fmt.Fprint(&buf, "\n\n"+string(original[end[0]:]))
 		}
 	} else {
 		fmt.Fprint(&buf, "package main\n\nfunc main() {\n")
+		fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
 		fmt.Fprint(&buf, string(p.Body))
+		fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
 		fmt.Fprint(&buf, "\n// end\n}")
 	}
-	return os.WriteFile(p.File, buf.Bytes(), 0600)
+	result := buf.Bytes()
+	start, _ := regexp.Compile(`fmt.Println\("start-output"\)`)
+	end, _ := regexp.Compile(`fmt.Println\("end-output"\)`)
+	stripped := start.ReplaceAll(result, []byte{})
+	stripped = end.ReplaceAll(stripped, []byte{})
+	_ = os.WriteFile(os.TempDir()+"/stripped.go", stripped, 0600)
+	return os.WriteFile(p.File, result, 0600)
 }
 
 func run(filename string) (*Page, error) {
@@ -77,6 +89,7 @@ func run(filename string) (*Page, error) {
 	if err != nil {
 		fmt.Fprint(os.Stderr, err)
 	}
+	_ = os.Rename(os.TempDir()+"/stripped.go", os.TempDir()+"/main.go")
 	go exec.Command("go", "fmt", filepath.Join(filename)).Run()
 	return &Page{File: filename, Body: out}, nil
 }
