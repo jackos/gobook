@@ -15,6 +15,12 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "shell",
+			"label": "rungo",
+			"options": {"cwd": "${fileDirname}"},
+			"command": "go run ${file}"
 		}
 	]
 }

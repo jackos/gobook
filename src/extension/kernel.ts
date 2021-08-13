@@ -116,9 +116,10 @@ export class Kernel {
         exec.start()
         exec.clearOutput()
         const cellInput = exec.cell.document.getText()
+        Kernel.output.appendLine(JSON.stringify(exec.cell.document.uri.fragment, null, 2))
         const result = await fetch("http://127.0.0.1:5250", {
             method: 'POST',
-            body: cellInput
+            body: `// cell ${exec.cell.document.uri.fragment}\n${cellInput}`
         }).then(res => res.text())
         Kernel.output.appendLine(result)
         var u8 = new TextEncoder().encode(result)

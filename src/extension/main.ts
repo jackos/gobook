@@ -18,14 +18,6 @@ export function activate(context: vscode.ExtensionContext) {
 		await Kernel.install(false)
 	}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('gobook.new', async () => {
-		const newNotebook = await vscode.workspace.openNotebookDocument('gobook',
-			new vscode.NotebookData([
-				new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '', 'gobook')
-			]))
-		vscode.window.showNotebookDocument(newNotebook)
-	}))
-
 	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.stopSession', async () => {
 		const uri = vscode.window.activeTextEditor?.document?.uri
 		if (uri) kernel.stopSession(uri)
@@ -72,7 +64,7 @@ export function rawToNotebookCellData(data: RawNotebookCell): vscode.NotebookCel
 		metadata: { leadingWhitespace: data.leadingWhitespace, trailingWhitespace: data.trailingWhitespace, indentation: data.indentation },
 		// outputs: data.outputs,
 		outputs: data.outputs || [],
-		value: data.content
+		value: data.content,
 	}
 }
 
