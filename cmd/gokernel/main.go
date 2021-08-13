@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -26,7 +27,7 @@ func (p *Page) save() error {
 	}
 	fmt.Fprintf(&buf, "package main\n\nimport (	\n")
 	for _, v := range pkgs {
-		matches, _ := regexp.Match(v.Name, p.Body)
+		matches, _ := regexp.Match(v.Name+"\\.", p.Body)
 		if matches {
 			fmt.Fprintf(&buf, "	\"%v\"\n", v.Name)
 		}
@@ -46,15 +47,18 @@ func run(filename string) (*Page, error) {
 func handler(w http.ResponseWriter, r *http.Request) {
 	b := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(b)
-	if err != nil {
-		log.Println("Parsed message")
+	if err == io.EOF {
+		log.Println("Parsed message", err)
 	}
-	p1 := &Page{File: "/home/jacko/main.go", Body: b}
+	fileLoc := os.TempDir() + "/main.go"
+	log.Println("Program located at:", fileLoc)
+	p1 := &Page{File: fileLoc, Body: b}
 	err = p1.save()
 	if err != nil {
 		log.Println("Failed to save program:", err)
 	}
-	result, err := run("/home/jacko/main.go")
+
+	result, err := run(fileLoc)
 	if err != nil {
 		log.Println("Could not execute program:", err)
 	}

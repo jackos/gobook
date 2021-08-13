@@ -9,11 +9,11 @@ type Cache = { [key: string]: string }
 
 export class Kernel {
     connected = false
-    static readonly executable = 'notebook-kernel';
+    static readonly executable = 'gokernel';
     static readonly installAsk = 'The Gobook kernel is not available';
 
     static get module(): string {
-        return getConfig().get('kernel.module') || 'github.com/gobookdev/gobook/cmd/notebook-kernel'
+        return getConfig().get('kernel.module') || 'github.com/gobookdev/gobook/cmd/gokernel'
     }
 
     static get version(): string {
@@ -42,7 +42,6 @@ export class Kernel {
     private connectTo: number | undefined
 
     constructor() {
-        // this.connectTo = 12345
     }
 
     label = 'Go Kernel';

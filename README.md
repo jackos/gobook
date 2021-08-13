@@ -16,8 +16,7 @@ Here is an example showing the source code in markdown format, and changing betw
 
 
 Use the command pallette to restart kernel
----
----
+
 ---
 ```markdown
 ctrl+shift+p
