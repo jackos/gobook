@@ -1,5 +1,6 @@
 import vscode = require('vscode')
 import path = require('path')
+import * as cp from "child_process"
 import proc = require('child_process')
 import { promises as fsp } from 'fs'
 import { getConfig } from './config'
@@ -41,27 +42,6 @@ function readCmd(label: string, command: string) {
                 reject(new Error(`${label} exited with code ${err.code}`))
             else
                 reject(new Error(`${label} exited`))
-        })
-    })
-}
-
-export function waitForProc(label: string, proc: proc.ChildProcess): Promise<undefined>
-export function waitForProc(label: string, proc: proc.ChildProcess, getOutput: () => string): Promise<string>
-export function waitForProc(label: string, proc: proc.ChildProcess, getOutput?: () => string): Promise<string | undefined> {
-    return new Promise((resolve, reject) => {
-        proc.on('error', err => reject(new Error(`An error occured while executing ${label}: ${err.message}`)))
-
-        proc.on('exit', (code, signal) => {
-            const out = getOutput && getOutput()
-
-            if (signal)
-                reject(new Error(`${label} was terminated with signal ${signal}`))
-            else if (code === 0)
-                resolve(out)
-            else if (out && out.length)
-                reject(new Error(`${label} exited with code ${code}:\n${out}`))
-            else
-                reject(new Error(`${label} exited with code ${code}`))
         })
     })
 }
@@ -122,34 +102,22 @@ export class GoTool {
         return value
     }
 
-    async install(ask?: string) {
-        const tags: string | undefined = this.config.get('kernel.tags')
-        const modVer = `${this.module}@${this.version}`
-        const label = `"go get${tags ? '-tags ' + tags : ''} ${modVer}"`
-
-        if (ask) {
-            const sel = await vscode.window.showWarningMessage(`${ask}. Run ${label} to install.`, 'Install')
-            if (sel != 'Install') return
-        }
-
-        const args = ['get', '-u', modVer]
-        if (tags) args.splice(1, 0, '-tags', tags)
-
+    async install() {
         this.output?.clear()
-        this.output?.append(`Installing kernel: go ${args.join(' ')}\n\n`)
+        this.output?.append(`Installing kernel`)
         this.output?.show()
-
-        const env = Object.assign({}, process.env, { GO111MODULE: 'on' })
-        const p = proc.spawn(await this.goCmd, args, { env })
-        p.stdout.on('data', b => this.output?.append(b.toString()))
-        p.stderr.on('data', b => this.output?.append(b.toString()))
-
-        await waitForProc(label, p)
-
-        const path = await this.path
-        if (path) return path
-
-        vscode.window.showErrorMessage('Failed to install kernel')
+        const execShell = (cmd: string) =>
+            new Promise<string>((resolve, reject) => {
+                cp.exec(cmd, (err, out) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    return resolve(out)
+                })
+            })
+        const installKernel = await execShell('go get github.com/gobookdev/gokernel')
+        vscode.window.showInformationMessage(installKernel)
+        vscode.window.showInformationMessage('Installed kernel')
     }
 
     async launch(args: string[], installAsk: string) {

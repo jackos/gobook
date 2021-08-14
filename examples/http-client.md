@@ -1,14 +1,4 @@
----
-```go
-import(
-	"context"
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"time"
-)
-```
----
+
 ---
 ```go
 client := &http.Client{
@@ -48,9 +38,6 @@ if err != nil {
 fmt.Printf("%+v\n", data)
 ```
 ```output
-application/json; charset=utf-8
-{UserID:1 ID:4 Title:et porro tempora Completed:true}
+exit status 2
 ```
 ---
-
-

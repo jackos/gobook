@@ -3,7 +3,7 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"preview": false,
 	"enableProposedApi": false,
 	"icon": "images/icon.png",
