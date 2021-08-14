@@ -115,26 +115,31 @@ export class Kernel {
     private async execute(_: any, exec: vscode.NotebookCellExecution) {
         exec.start()
         exec.clearOutput()
-        const cellInput = exec.cell.document.getText()
+        const data = {
+            index: exec.cell.index,
+            fragment: +exec.cell.document.uri.fragment.substring(3),
+            contents: exec.cell.document.getText(),
+            executing: true
+        }
         const res = await fetch("http://127.0.0.1:5250", {
             method: 'POST',
-            body: `// cell ${exec.cell.document.uri.fragment.substring(5)}\n${cellInput}`
+            body: JSON.stringify(data)
         }).then(res => res.text())
-        let writeLine = false
-        let result = ""
-        for (const line of res.split("\n")) {
-            if (line === "end-output") {
-                break
-            }
-            if (writeLine) {
-                result += line
-            }
-            if (line === "start-output") {
-                writeLine = true
-            }
-        }
-        Kernel.output.appendLine(result)
-        var u8 = new TextEncoder().encode(result)
+        // let writeLine = false
+        // let result = ""
+        // for (const line of res.split("\n")) {
+        //     if (line === "end-output") {
+        //         break
+        //     }
+        //     if (writeLine) {
+        //         result += line
+        //     }
+        //     if (line === "start-output") {
+        //         writeLine = true
+        //     }
+        // }
+        Kernel.output.appendLine(res)
+        var u8 = new TextEncoder().encode(res)
         const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
         await exec.appendOutput([new vscode.NotebookCellOutput([x])])
         exec.end(true)

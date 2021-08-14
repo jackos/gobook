@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -10,127 +11,114 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"sort"
 )
 
-type Page struct {
-	File string
-	Body []byte
+type Program struct {
+	File      string        // Temp file location
+	Cells     map[int]*Cell // Represents a cell from VS Code notebook
+	Functions string
 }
 
-func (p *Page) save(original []byte) error {
-	var buf bytes.Buffer
-	// Get the cell number from incoming input
-	cellRE, _ := regexp.Compile("// cell")
-	endRE, _ := regexp.Compile("// end")
-	pos := cellRE.FindIndex(p.Body)
-	block := ""
-	if pos == nil {
-		fmt.Println("Didn't find an input")
-	} else {
-		i := pos[1]
-		end := 0
-		for {
-			i++
-			if p.Body[i] == '\n' {
-				end = i
-				break
-			}
-		}
-		block = string(p.Body[pos[1]+1 : end])
-		fmt.Println(block)
-	}
-
-	if len(original) > 1 {
-		inputRE, _ := regexp.Compile("// cell " + block)
-		start := inputRE.FindIndex(original)
-		// If no input matches, insert at the end
-		if start == nil {
-			i := endRE.FindIndex(original)
-			fmt.Fprint(&buf, string(original[:i[0]]))
-			fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
-			fmt.Fprint(&buf, "\n"+string(p.Body))
-			fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
-			fmt.Fprint(&buf, "\n\n"+string(original[i[0]:]))
-		} else {
-			// If get a match, replace old input with new one
-			textRemainder := original[start[1]:]
-			end := cellRE.FindIndex(textRemainder)
-			if end == nil {
-				end = endRE.FindIndex(original)
-			} else {
-				end[1] = end[1] + start[1]
-				end[0] = end[0] + start[1]
-			}
-			fmt.Fprint(&buf, string(original[:start[0]]))
-			fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
-			fmt.Fprint(&buf, string(p.Body))
-			fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
-			fmt.Fprint(&buf, "\n\n"+string(original[end[0]:]))
-		}
-	} else {
-		fmt.Fprint(&buf, "package main\n\nfunc main() {\n")
-		fmt.Fprintf(&buf, "\nfmt.Println(\"start-output\")\n")
-		fmt.Fprint(&buf, string(p.Body))
-		fmt.Fprintf(&buf, "\nfmt.Println(\"end-output\")\n")
-		fmt.Fprint(&buf, "\n// end\n}")
-	}
-	result := buf.Bytes()
-	start, _ := regexp.Compile(`fmt.Println\("start-output"\)`)
-	end, _ := regexp.Compile(`fmt.Println\("end-output"\)`)
-	stripped := start.ReplaceAll(result, []byte{})
-	stripped = end.ReplaceAll(stripped, []byte{})
-	_ = os.WriteFile(os.TempDir()+"/stripped.go", stripped, 0600)
-	return os.WriteFile(p.File, result, 0600)
+type Cell struct {
+	Fragment  int    // What index the cell was at, at time of execution
+	Index     int    // Current index by order in VS Code
+	Contents  string // What's inside the cell
+	Executing bool   // The cell that is currently being executed
 }
 
-func run(filename string) (*Page, error) {
-	exec.Command("gopls", "imports", "-w", filepath.Join(filename)).Run()
-	out, err := exec.Command("go", "run", filepath.Join(filename)).CombinedOutput()
+func (p *Program) run() ([]byte, error) {
+	err := exec.Command("gopls", "imports", "-w", filepath.Join(p.File)).Run()
 	if err != nil {
-		fmt.Fprint(os.Stderr, err)
+		return nil, err
 	}
-	_ = os.Rename(os.TempDir()+"/stripped.go", os.TempDir()+"/main.go")
-	go exec.Command("go", "fmt", filepath.Join(filename)).Run()
-	return &Page{File: filename, Body: out}, nil
-}
-
-func load(filename string) []byte {
-	dat, err := os.ReadFile(filename)
+	out, err := exec.Command("go", "run", filepath.Join(p.File)).CombinedOutput()
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-	return dat
+	err = exec.Command("go", "fmt", filepath.Join(p.File)).Run()
+	if err != nil {
+		return nil, err
+	}
+	// Determine where the output for executing cell starts and ends
+	start, _ := regexp.Compile("gobook-output-start")
+	end, _ := regexp.Compile("gobook-output-end")
+	s := start.FindIndex(out)
+	if s == nil {
+		return out, nil
+	}
+	e := end.FindIndex(out)
+	return out[s[1]:e[0]], nil
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func (p *Program) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	p.Functions = ""
 	b := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(b)
 	if err == io.EOF {
 		log.Println("Parsed message")
 	}
+	var input Cell
+	_ = json.Unmarshal([]byte(b), &input)
+	p.Cells[input.Fragment] = &input
 
-	file := os.TempDir() + "/main.go"
-	original := load(file)
-
-	p1 := &Page{File: file, Body: b}
-	err = p1.save(original)
-	if err != nil {
-		log.Println("Failed to save program:", err)
+	keys := [][]int{}
+	for _, v := range p.Cells {
+		keys = append(keys, []int{v.Index, v.Fragment})
 	}
 
-	result, err := run(file)
-	if err != nil {
-		log.Println("Could not execute program:", err)
-	}
+	sort.Slice(keys, func(i, j int) bool {
+		if keys[i][0] == keys[j][0] {
+			return true
+		}
+		return keys[i][0] < keys[j][0]
+	})
+	var buf bytes.Buffer
+	var bufBody bytes.Buffer
 
-	_, err = w.Write(result.Body)
+	for _, key := range keys {
+		c := p.Cells[key[1]]
+
+		reFunc, _ := regexp.Compile(`\s*func.*\(\)\s*{`)
+		if reFunc.MatchString(c.Contents) {
+			p.Functions += c.Contents
+		} else {
+			if c.Executing {
+				bufBody.Write([]byte(`println("gobook-output-start")`))
+			}
+			bufBody.Write([]byte("\n" + c.Contents + "\n"))
+			if c.Executing {
+				bufBody.Write([]byte(`println("gobook-output-end") `))
+			}
+		}
+	}
+	p.Cells[input.Fragment].Executing = false
+	buf.Write([]byte("package main\n\n"))
+	buf.Write([]byte(p.Functions))
+	buf.Write([]byte("\n\nfunc main() {"))
+	buf.Write(bufBody.Bytes())
+	buf.Write([]byte("\n}"))
+	err = os.WriteFile(p.File, buf.Bytes(), 0600)
 	if err != nil {
-		fmt.Println(err)
+		message := err.Error() + "\nMake sure the directory exists and you have permission to write there"
+		_, _ = w.Write([]byte(message))
+		log.Println(message)
+	} else {
+		result, err := p.run()
+		if err != nil {
+			_, _ = w.Write([]byte(err.Error()))
+			log.Println("Failed to run program:", err)
+		}
+		_, err = w.Write(result)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	cells := make(map[int]*Cell)
+	http.Handle("/", &Program{File: os.TempDir() + "/main.go", Cells: cells})
 	log.Println("Running on port 5250")
 	log.Fatal(http.ListenAndServe(":5250", nil))
 }
