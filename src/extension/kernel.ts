@@ -13,7 +13,7 @@ export class Kernel {
     static readonly installAsk = 'The Gobook kernel is not available';
 
     static get module(): string {
-        return getConfig().get('kernel.module') || 'github.com/gobookdev/gobook/cmd/gokernel'
+        return getConfig().get('kernel.module') || 'github.com/gobookdev/gokernel'
     }
 
     static get version(): string {
@@ -125,19 +125,6 @@ export class Kernel {
             method: 'POST',
             body: JSON.stringify(data)
         }).then(res => res.text())
-        // let writeLine = false
-        // let result = ""
-        // for (const line of res.split("\n")) {
-        //     if (line === "end-output") {
-        //         break
-        //     }
-        //     if (writeLine) {
-        //         result += line
-        //     }
-        //     if (line === "start-output") {
-        //         writeLine = true
-        //     }
-        // }
         Kernel.output.appendLine(res)
         var u8 = new TextEncoder().encode(res)
         const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
