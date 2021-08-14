@@ -1,7 +1,7 @@
 
 # Gobook: Go Notebook VS Code Extension
 
-## Install Instructions
+## Install Instructions 
 - Install the extension
 - Extension will automatically start when opening a .gobook file
 - To use it with a .md or .markdown file, right click on the file and press 'Open With' then 'Gobook'
