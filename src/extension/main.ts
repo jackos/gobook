@@ -8,19 +8,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const controller = vscode.notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel')
 	controller.supportedLanguages = ['go']
 	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl)
-	controller.interruptHandler = doc => kernel.interrupt(doc)
-
 	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.restart', () => {
-		kernel.kill('SIGTERM')
-	}))
-
-	context.subscriptions.push(vscode.commands.registerCommand('goNotebookKernel.kernel.rebuild', async () => {
-		await Kernel.install(false)
-	}))
-
-	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.stopSession', async () => {
-		const uri = vscode.window.activeTextEditor?.document?.uri
-		if (uri) kernel.stopSession(uri)
+		vscode.window.showInformationMessage('Restarting kernel')
+		kernel.installed = false
 	}))
 
 	const notebookSettings = {
@@ -32,10 +22,6 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	context.subscriptions.push(vscode.workspace.registerNotebookSerializer('gobook', new MarkdownProvider(), notebookSettings))
-}
-
-export function deactivate() {
-	kernel.kill('SIGKILL')
 }
 
 class MarkdownProvider implements vscode.NotebookSerializer {
@@ -62,7 +48,6 @@ export function rawToNotebookCellData(data: RawNotebookCell): vscode.NotebookCel
 		kind: data.kind,
 		languageId: data.language,
 		metadata: { leadingWhitespace: data.leadingWhitespace, trailingWhitespace: data.trailingWhitespace, indentation: data.indentation },
-		// outputs: data.outputs,
 		outputs: data.outputs || [],
 		value: data.content,
 	}

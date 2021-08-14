@@ -2,8 +2,8 @@
 	"name": "gobook",
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
-	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.1.1",
+	"description": "Go interactive notebook that executes code and saves results to markdown",
+	"version": "0.1.3",
 	"preview": false,
 	"enableProposedApi": false,
 	"icon": "images/icon.png",
@@ -71,16 +71,6 @@
 				"command": "gobook.kernel.restart",
 				"title": "Gobook: Restart Kernel",
 				"description": "Restart the running instance of the kernel"
-			},
-			{
-				"command": "gobook.kernel.stopSession",
-				"title": "Gobook: Stop Kernel Session",
-				"description": "Stop the kernel session for the current document"
-			},
-			{
-				"command": "goNotebookKernel.kernel.rebuild",
-				"title": "Gobook: Rebuild Kernel",
-				"description": "Rebuild the kernel"
 			}
 		],
 		"startEntries": [

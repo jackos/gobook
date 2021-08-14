@@ -1,4 +1,9 @@
 # Change Log
+## v0.1.2
+Changed the kernel to run inside a task giving the user more visibility over what's happening. It's also a gigantic speed boost compared to running inside nodejs child_module. And it also gracefully handles restarting task. Does a check on each cell execution and restarts task if not active.
+
+Added a check, if a different file is being executed to the last one, the kernel removes the current source code from memory.
+
 ## v0.1.1
 Fixed issues with kernel not installing correctly
 
