@@ -137,12 +137,9 @@
 	"scripts": {
 		"compile:extension": "yarn run bundle --sourcemap",
 		"watch:extension": "yarn run bundle --sourcemap",
-		"compile:grpc:js": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/proto --grpc_out=grpc_js:src/proto --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin kernel.proto",
-		"compile:grpc:ts": "grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:src/proto kernel.proto",
-		"compile:grpc": "yarn run compile:grpc:js && yarn run compile:grpc:ts",
 		"bundle": "esbuild ./src/extension/main.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
 		"watch": "yarn run watch:extension",
-		"compile": "yarn run compile:extension && yarn run compile:grpc && yarn run bundle --minify",
+		"compile": "yarn run compile:extension && yarn run bundle --minify",
 		"vscode:prepublish": "yarn run compile",
 		"lint": "eslint src --ext ts",
 		"deploy": "npx vsce publish --noVerify",
@@ -150,12 +147,10 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"@grpc/grpc-js": "^1.2.12",
-		"@types/node-fetch": "^2.5.12",
-		"google-protobuf": "^3.15.7",
 		"node-fetch": "^2.6.1"
 	},
 	"devDependencies": {
+		"@types/node-fetch": "^2.5.12",
 		"@types/glob": "^7.1.1",
 		"@types/google-protobuf": "^3.7.4",
 		"@types/mocha": "^7.0.2",
@@ -166,9 +161,6 @@
 		"esbuild": "^0.12.9",
 		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
-		"grpc": "^1.24.6",
-		"grpc_tools_node_protoc_ts": "^5.3.0",
-		"grpc-tools": "^1.11.1",
 		"json": "^10.0.0",
 		"mocha": "^7.1.2",
 		"ovsx": "^0.1.0-next.a9154dc",
