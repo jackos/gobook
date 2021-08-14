@@ -3,9 +3,9 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Gobook: Run Go code interactively like a Jupyter Notebook. Works with .md and .gobook files",
-	"version": "0.0.23",
-	"preview": true,
-	"enableProposedApi": true,
+	"version": "0.1.0",
+	"preview": false,
+	"enableProposedApi": false,
 	"icon": "images/icon.png",
 	"keywords": [
 		"go",

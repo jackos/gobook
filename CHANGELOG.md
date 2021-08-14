@@ -1,4 +1,7 @@
 # Change Log
+## v0.1.0
+Big overhaul, changed kernel to be a compiler, removed GRPC, removed a lot of redundant code. Many bugs disappeared after major changes.
+
 ## v0.0.21
 Fix problem with rendering blank lines as code cells
 
