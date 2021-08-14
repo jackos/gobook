@@ -1,3 +1,3 @@
-module github.com/gobookdev/gobook/cmd/gokernel@v0.0.1
+module github.com/gobookdev/gobook/cmd/gokernel
 
 go 1.16
