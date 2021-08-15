@@ -1,4 +1,11 @@
 # Change Log
+## v0.1.4
+Made the gokernel installation cross platform
+
+Fixed output containing newlines
+
+Rewrote documentation to be current with new features
+
 ## v0.1.3
 Changed the kernel to run inside a task giving the user more visibility over what's happening. It's also a gigantic speed boost compared to running inside nodejs child_module. And it also gracefully handles restarting task. Does a check on each cell execution and restarts task if not active.
 

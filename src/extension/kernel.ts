@@ -2,6 +2,7 @@ import fetch from 'node-fetch'
 import { TextEncoder } from 'util'
 import * as vscode from 'vscode'
 import { execSync } from 'child_process'
+import { sep } from 'path'
 
 
 export class Kernel {
@@ -61,8 +62,8 @@ export class Kernel {
                     }
                     success = false
                 }
-                Kernel.output.appendLine(res)
-                var u8 = new TextEncoder().encode(res)
+                Kernel.output.appendLine(res.trim())
+                var u8 = new TextEncoder().encode(res.trim())
                 const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
                 await exec.appendOutput([new vscode.NotebookCellOutput([x])])
             }
@@ -72,18 +73,20 @@ export class Kernel {
     // Executes the Go binary on first run of a notebook cell
     async install() {
         if (!this.installed) {
-            execSync("go get github.com/gobookdev/gokernel")
+            vscode.window.showInformationMessage("Checking for latest version of gokernel")
+            execSync("go get github.com/gobookdev/gokernel@latest")
             this.installed = true
             Kernel.output.appendLine("Kernel Installed")
         }
     }
     async launch() {
+        const GOPATH = execSync("go env GOPATH").toString().trim()
         const gokernelTask = new vscode.Task(
             { type: 'shell' }, // this is the same type as in tasks.json
             null,
             'gokernel', // how you name the task
-            'gokernel', // Shows up as MyTask: name 
-            new vscode.ShellExecution("gokernel"),
+            'server', // Shows up as MyTask: name 
+            new vscode.ShellExecution(GOPATH + sep + "bin" + sep + "gokernel"),
             ["mywarnings"] // list of problem matchers (can use $gcc or other pre-built matchers, or the ones defined in package.json)
         )
         vscode.tasks.executeTask(gokernelTask)
