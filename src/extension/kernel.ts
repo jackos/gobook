@@ -84,8 +84,8 @@ export class Kernel {
         const gokernelTask = new vscode.Task(
             { type: 'shell' }, // this is the same type as in tasks.json
             null,
-            'gokernel', // how you name the task
-            'server', // Shows up as MyTask: name 
+            'server', // how you name the task
+            'gokernel', // Shows up as MyTask: name 
             new vscode.ShellExecution(GOPATH + sep + "bin" + sep + "gokernel"),
             ["mywarnings"] // list of problem matchers (can use $gcc or other pre-built matchers, or the ones defined in package.json)
         )

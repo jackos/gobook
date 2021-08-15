@@ -2,7 +2,7 @@
 # Gobook: Go Notebook VS Code Extension
 
 ## Getting Started
-- Create a markdown (.md or .markdown) document and open it
+- Create a markdown `.md` or `.markdown` document and open it
 - If extension hasn't activated, right click on file and select "Open With..." Then select "Gobook"
 - Create a cell, write some Go and press the play button
 
@@ -29,7 +29,7 @@
 - If you terminate the gokernel task, the next time you execute a cell it will start again. This can be used to restart the kernel
 - On first execution it will check for gokernel updates with `go get` and install latest if required
 - The kernel will be installed to `$GOPATH/bin/gokernel`, delete it to force a reinstall
-- Code completion and full langauage server features are coming, but for now the generated `tmp/main.go` works with gopls
+- Code completion and full langauage server features are coming, but for now only the generated `tmp/main.go` works with gopls
 - Keyboard shortcuts are located in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
 
 ## Output Examples
@@ -37,9 +37,6 @@ Click the Markdown files [in the repo here](https://github.com/gobookdev/gobook-
 
 ## Kernel
 The kernel is very simple [source code here](https://github.com/gobookdev/gokernel) 
-
----
-```go
 
 ## Development Status
 ### Working
@@ -61,5 +58,3 @@ The kernel is very simple [source code here](https://github.com/gobookdev/gokern
 ### Future development
 - Add support to execute JS, TS and Python code cells with additional kernels
 - Shared state between all languages, i.e. initialize x in Python and use it in Go
-```
----
