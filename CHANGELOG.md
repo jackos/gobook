@@ -1,4 +1,7 @@
 # Change Log
+## v0.1.6
+Added error handling if go not installed, and gopls check
+
 ## v0.1.4
 Made the gokernel installation cross platform
 

@@ -25,11 +25,11 @@
 ![github](images/r6.png)
 
 ## Notes
-- If you are writing functions, put them in a seperate cell, gokernel will put them outside the main function
+- If you are writing functions, put them in a separate cell, gokernel will put them outside the main function
 - If you terminate the gokernel task, the next time you execute a cell it will start again. This can be used to restart the kernel
 - On first execution it will check for gokernel updates with `go get` and install latest if required
 - The kernel will be installed to `$GOPATH/bin/gokernel`, delete it to force a reinstall
-- Code completion and full langauage server features are coming, but for now only the generated `tmp/main.go` works with gopls
+- Code completion and full language server features are coming, but for now only the generated `tmp/main.go` works with gopls
 - Keyboard shortcuts are located in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
 
 ## Output Examples

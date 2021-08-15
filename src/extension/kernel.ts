@@ -18,65 +18,72 @@ export class Kernel {
     sessions = new Map();
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
         Kernel.output.appendLine(JSON.stringify(doc))
-        await this.install()
-        const tasks = vscode.tasks.taskExecutions
-        let launchTask = true
-        if (tasks.length) {
-            launchTask = false
+        if (!this.installed) {
+            await this.install()
         }
-        for (const task of tasks) {
-            if (task.task.name === "gobook") {
+        if (this.installed) {
+            const tasks = vscode.tasks.taskExecutions
+            let launchTask = true
+            if (tasks.length) {
                 launchTask = false
             }
-        }
-        if (launchTask) {
-            await this.launch()
-        }
-        for (const cell of cells) {
-            const exec = ctrl.createNotebookCellExecution(cell)
-            exec.start((new Date).getTime())
-            exec.clearOutput()
-            const data = {
-                index: exec.cell.index,
-                filename: doc.uri.fsPath,
-                fragment: +exec.cell.document.uri.fragment.substring(3),
-                contents: exec.cell.document.getText(),
-                executing: true
-            }
-            let success = true
-            let res = await fetch("http://127.0.0.1:5250", {
-                method: 'POST',
-                body: JSON.stringify(data),
-                timeout: 5000
-            })
-                .then(res => res.text())
-                .catch(err => { success = false })
-            if (res) {
-                if (res.substring(0, 12) === "exit status ") {
-                    const lines = res.split("\n")
-                    res = ""
-                    for (const i in lines) {
-                        if (i !== '0') {
-                            res += lines[i] + "\n"
-                        }
-                    }
-                    success = false
+            for (const task of tasks) {
+                if (task.task.name === "gobook") {
+                    launchTask = false
                 }
-                Kernel.output.appendLine(res.trim())
-                var u8 = new TextEncoder().encode(res.trim())
-                const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
-                await exec.appendOutput([new vscode.NotebookCellOutput([x])])
             }
-            exec.end(success, (new Date).getTime())
+            if (launchTask) {
+                await this.launch()
+            }
+            for (const cell of cells) {
+                const exec = ctrl.createNotebookCellExecution(cell)
+                exec.start((new Date).getTime())
+                exec.clearOutput()
+                const data = {
+                    index: exec.cell.index,
+                    filename: doc.uri.fsPath,
+                    fragment: +exec.cell.document.uri.fragment.substring(3),
+                    contents: exec.cell.document.getText(),
+                    executing: true
+                }
+                let success = true
+                let res = await fetch("http://127.0.0.1:5250", {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    timeout: 5000
+                })
+                    .then(res => res.text())
+                    .catch(err => { success = false })
+                if (res) {
+                    if (res.substring(0, 12) === "exit status ") {
+                        const lines = res.split("\n")
+                        res = ""
+                        for (const i in lines) {
+                            if (i !== '0') {
+                                res += lines[i] + "\n"
+                            }
+                        }
+                        success = false
+                    }
+                    Kernel.output.appendLine(res.trim())
+                    var u8 = new TextEncoder().encode(res.trim())
+                    const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
+                    await exec.appendOutput([new vscode.NotebookCellOutput([x])])
+                }
+                exec.end(success, (new Date).getTime())
+            }
         }
     }
     // Executes the Go binary on first run of a notebook cell
     async install() {
-        if (!this.installed) {
-            vscode.window.showInformationMessage("Checking for latest version of gokernel")
+        try {
+            vscode.window.showInformationMessage("Checking latest version of gopls and gokernel")
             execSync("go get github.com/gobookdev/gokernel@latest")
+            execSync("go get golang.org/x/tools/gopls@latest")
+            vscode.window.showInformationMessage("gopls and gokernel are up to date")
             this.installed = true
-            Kernel.output.appendLine("Kernel Installed")
+        } catch (err) {
+            vscode.window.showErrorMessage("Go not installed correctly [Follow instructions here](https://golang.org/doc/install)")
         }
     }
     async launch() {
