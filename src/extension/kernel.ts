@@ -56,13 +56,7 @@ export class Kernel {
                     .catch(err => { success = false })
                 if (res) {
                     if (res.substring(0, 12) === "exit status ") {
-                        const lines = res.split("\n")
-                        res = ""
-                        for (const i in lines) {
-                            if (i !== '0') {
-                                res += lines[i] + "\n"
-                            }
-                        }
+                        res = res.split("\n").slice(1).join("\n")
                         success = false
                     }
                     Kernel.output.appendLine(res.trim())

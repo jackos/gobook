@@ -1,4 +1,9 @@
+
 # Change Log
+
+## v0.1.8
+Fixed error messages containing javascript text
+
 ## v0.1.6
 Added error handling if go not installed, and gopls check
 
@@ -39,8 +44,6 @@ println(x)
 10
 ```
 ---
-
-
 This makes it clear what the input / output is without cluttering when viewing the markdown file. Experimented with many different ways, this looked the most elegant to me.
 
 ## v0.0.12
