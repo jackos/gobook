@@ -3,9 +3,7 @@ import fetch from 'node-fetch'
 import { TextEncoder } from 'util'
 import { execSync } from 'child_process'
 import { sep } from 'path'
-import { createServer, createConnection } from "net"
-import { exists, existsSync } from 'fs'
-import * as waitPort from 'wait-port'
+import { error } from 'console'
 
 const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.NotebookDocument): Promise<string | void> => {
     const data = {
@@ -15,14 +13,14 @@ const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.Note
         contents: exec.cell.document.getText(),
         executing: true
     }
-    return await fetch("http://127.0.0.1:5250", {
+    eturn await fetch("http://127.0.0.1:5250", {
         method: 'POST',
         body: JSON.stringify(data),
         timeout: 5000
     })
         .then(res => res.text())
         .catch(err => {
-            vscode.window.showWarningMessage("Wait for gokernel to finish installing, check the install tasks")
+            vscode.window.showWarningMessage(`Wait for gokernel to finish installing: ${err}`)
         })
 }
 
@@ -52,23 +50,26 @@ export class Kernel {
 
         for (const cell of cells) {
             const exec = ctrl.createNotebookCellExecution(cell)
-            // Used for the cell timer counter
-            exec.start((new Date).getTime())
-            exec.clearOutput()
-            let success = true
-            let res = await sendCodeCell(exec, doc)
-            if (res) {
-                if (res.substring(0, 12) === "exit status ") {
-                    res = res.split("\n").slice(1).join("\n")
-                    success = false
-                }
-                this.output.appendLine(res.trim())
-                var u8 = new TextEncoder().encode(res.trim())
-                const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
-                await exec.appendOutput([new vscode.NotebookCellOutput([x])])
-                exec.end(success, (new Date).getTime())
-            } else {
+            if (!this.installed) {
                 exec.end(false, (new Date).getTime())
+            } else {
+                // Used for the cell timer counter
+                exec.start((new Date).getTime())
+                exec.clearOutput()
+                let success = false
+                let res = await sendCodeCell(exec, doc)
+                if (res) {
+                    if (res.substring(0, 12) === "exit status ") {
+                        res = res.split("\n").slice(1).join("\n")
+                    } else {
+                        success = true
+                    }
+                    this.output.appendLine(res.trim())
+                    var u8 = new TextEncoder().encode(res.trim())
+                    const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
+                    await exec.appendOutput([new vscode.NotebookCellOutput([x])])
+                }
+                exec.end(success, (new Date).getTime())
             }
         }
     }
@@ -92,7 +93,8 @@ export class Kernel {
                 'gopls',
                 new vscode.ShellExecution("go get golang.org/x/tools/gopls@latest"),
             )
-            await Promise.all([vscode.tasks.executeTask(installGokernel), vscode.tasks.executeTask(installGopls)])
+            vscode.tasks.executeTask(installGopls)
+            await vscode.tasks.executeTask(installGokernel)
             vscode.window.showInformationMessage("gopls and gokernel are up to date")
             this.installed = true
             this.launch()

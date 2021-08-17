@@ -73,13 +73,6 @@
 				"description": "Restart the running instance of the kernel"
 			}
 		],
-		"startEntries": [
-			{
-				"title": "Gobook",
-				"description": "Run Go code interactively in a markdown format",
-				"command": "gobook.new"
-			}
-		],
 		"notebooks": [
 			{
 				"type": "gobook",
@@ -137,9 +130,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"axios": "^0.21.1",
-		"node-fetch": "^2.6.1",
-		"wait-port": "^0.2.9"
+		"node-fetch": "^2.6.1"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
