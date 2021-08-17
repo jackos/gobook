@@ -40,8 +40,8 @@ Because the source code is standard markdown, it renders nicely on Github or blo
 - Code completion and full language server features are coming, but for now only the generated `tmp/main.go` works with gopls
 - Keyboard shortcuts are located in File > Preferences > Keyboard Shortcuts. Type in 'Notebook:' to see everything available.
 
-## Output Examples
-Click the Markdown files [in the repo here](https://github.com/gobookdev/gobook-examples) to see how the markdown formats after running cells and saving.
+## Output Example
+Check out [gobook.dev](https://gobook.dev) which was created using only markdown files generated from this extension.
 
 ## Kernel
 The kernel is very simple [source code here](https://github.com/gobookdev/gokernel) 

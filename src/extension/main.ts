@@ -5,6 +5,8 @@ import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdown
 const kernel = new Kernel()
 
 export function activate(context: vscode.ExtensionContext) {
+	kernel.install()
+	kernel.launch()
 	const controller = vscode.notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel')
 	controller.supportedLanguages = ['go']
 	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl)

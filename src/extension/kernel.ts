@@ -3,6 +3,7 @@ import { TextEncoder } from 'util'
 import * as vscode from 'vscode'
 import { execSync } from 'child_process'
 import { sep } from 'path'
+import { createServer } from "net"
 
 
 export class Kernel {
@@ -12,19 +13,19 @@ export class Kernel {
         return value
     }
     installed = false
+    skipLaunch = false
     label = 'Go Kernel';
     id = 'go-kernel';
     supportedLanguages = ['go'];
     sessions = new Map();
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
-        Kernel.output.appendLine(JSON.stringify(doc))
         if (!this.installed) {
             await this.install()
         }
         if (this.installed) {
             const tasks = vscode.tasks.taskExecutions
             let launchTask = true
-            if (tasks.length) {
+            if (tasks.length || this.skipLaunch) {
                 launchTask = false
             }
             for (const task of tasks) {
@@ -90,7 +91,31 @@ export class Kernel {
             new vscode.ShellExecution(GOPATH + sep + "bin" + sep + "gokernel"),
             ["mywarnings"] // list of problem matchers (can use $gcc or other pre-built matchers, or the ones defined in package.json)
         )
-        vscode.tasks.executeTask(gokernelTask)
-        await new Promise(resolve => setTimeout(resolve, 2000))
+
+        const portInUse = (port, callback) => {
+            const server = createServer(function (socket) {
+                socket.write('Echo server\r\n')
+                socket.pipe(socket)
+            })
+
+            server.on('error', function (e) {
+                callback(true)
+            })
+            server.on('listening', function (e) {
+                server.close()
+                callback(false)
+            })
+
+            server.listen(port, '127.0.0.1')
+        }
+
+        portInUse(5250, (returnValue) => {
+            if (returnValue) {
+                this.skipLaunch = true
+                vscode.window.showInformationMessage("gokernel already running on port 5250")
+            } else {
+                vscode.tasks.executeTask(gokernelTask)
+            }
+        })
     }
 }

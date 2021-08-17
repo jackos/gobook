@@ -3,7 +3,7 @@
 	"publisher": "gobookdev",
 	"displayName": "Go Notebook",
 	"description": "Go interactive notebook that executes code and saves results to markdown",
-	"version": "0.1.8",
+	"version": "0.1.10",
 	"preview": false,
 	"enableProposedApi": false,
 	"icon": "images/icon.png",
