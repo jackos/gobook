@@ -97,15 +97,13 @@ export class Kernel {
                 socket.write('Echo server\r\n')
                 socket.pipe(socket)
             })
-
-            server.on('error', function (e) {
+            server.on('error', (e) => {
                 callback(true)
             })
-            server.on('listening', function (e) {
+            server.on('listening', (e) => {
                 server.close()
                 callback(false)
             })
-
             server.listen(port, '127.0.0.1')
         }
 
