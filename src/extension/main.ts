@@ -54,19 +54,3 @@ export function rawToNotebookCellData(data: RawNotebookCell): vscode.NotebookCel
 		value: data.content,
 	}
 }
-
-const ALL_LANGUAGES = [
-	'go',
-	'output',
-	'markdown',
-	'plaintext',
-	'javascript',
-	'typescript',
-	'css',
-	'html',
-	'xml',
-	'json',
-	'sql',
-	'makefile',
-	'dockerfile',
-]

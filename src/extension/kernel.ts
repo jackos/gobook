@@ -1,6 +1,6 @@
+import * as vscode from 'vscode'
 import fetch from 'node-fetch'
 import { TextEncoder } from 'util'
-import * as vscode from 'vscode'
 import { execSync } from 'child_process'
 import { sep } from 'path'
 import { createServer } from "net"
@@ -69,7 +69,6 @@ export class Kernel {
             }
         }
     }
-    // Executes the Go binary on first run of a notebook cell
     async install() {
         try {
             vscode.window.showInformationMessage("Checking latest version of gopls and gokernel")
@@ -84,15 +83,15 @@ export class Kernel {
     async launch() {
         const GOPATH = execSync("go env GOPATH").toString().trim()
         const gokernelTask = new vscode.Task(
-            { type: 'shell' }, // this is the same type as in tasks.json
+            { type: 'shell' },
             null,
-            'server', // how you name the task
-            'gokernel', // Shows up as MyTask: name 
+            'server',
+            'gokernel',
             new vscode.ShellExecution(GOPATH + sep + "bin" + sep + "gokernel"),
-            ["mywarnings"] // list of problem matchers (can use $gcc or other pre-built matchers, or the ones defined in package.json)
+            ["mywarnings"]
         )
 
-        const portInUse = (port, callback) => {
+        const portInUse = (port: number, callback: Function) => {
             const server = createServer(function (socket) {
                 socket.write('Echo server\r\n')
                 socket.pipe(socket)
@@ -107,8 +106,8 @@ export class Kernel {
             server.listen(port, '127.0.0.1')
         }
 
-        portInUse(5250, (returnValue) => {
-            if (returnValue) {
+        portInUse(5250, (running: boolean) => {
+            if (running) {
                 this.skipLaunch = true
                 vscode.window.showInformationMessage("gokernel already running on port 5250")
             } else {
