@@ -1,3 +1,4 @@
+import { execSync } from 'child_process'
 import * as vscode from 'vscode'
 import { Kernel } from './kernel'
 import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdownParser'
@@ -6,13 +7,11 @@ const kernel = new Kernel()
 
 export function activate(context: vscode.ExtensionContext) {
 	kernel.install()
-	kernel.launch()
 	const controller = vscode.notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel')
 	controller.supportedLanguages = ['go']
 	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl)
 	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.restart', () => {
 		vscode.window.showInformationMessage('Restarting kernel')
-		kernel.installed = false
 	}))
 
 	const notebookSettings = {

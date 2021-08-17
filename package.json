@@ -137,14 +137,16 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"node-fetch": "^2.6.1"
+		"axios": "^0.21.1",
+		"node-fetch": "^2.6.1",
+		"wait-port": "^0.2.9"
 	},
 	"devDependencies": {
-		"@types/node-fetch": "^2.5.12",
 		"@types/glob": "^7.1.1",
 		"@types/google-protobuf": "^3.7.4",
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^14.14.37",
+		"@types/node-fetch": "^2.5.12",
 		"@typescript-eslint/eslint-plugin": "^2.30.0",
 		"@typescript-eslint/parser": "^2.30.0",
 		"concurrently": "^6.0.0",

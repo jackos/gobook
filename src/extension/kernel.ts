@@ -3,116 +3,113 @@ import fetch from 'node-fetch'
 import { TextEncoder } from 'util'
 import { execSync } from 'child_process'
 import { sep } from 'path'
-import { createServer } from "net"
+import { createServer, createConnection } from "net"
+import { exists, existsSync } from 'fs'
+import * as waitPort from 'wait-port'
 
-
-export class Kernel {
-    static get output() {
-        const value = vscode.window.createOutputChannel('Go Notebook Kernel')
-        Object.defineProperty(this, 'output', { value })
-        return value
+const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.NotebookDocument): Promise<string | void> => {
+    const data = {
+        index: exec.cell.index,
+        filename: doc.uri.fsPath,
+        fragment: +exec.cell.document.uri.fragment.substring(3),
+        contents: exec.cell.document.getText(),
+        executing: true
     }
+    return await fetch("http://127.0.0.1:5250", {
+        method: 'POST',
+        body: JSON.stringify(data),
+        timeout: 5000
+    })
+        .then(res => res.text())
+        .catch(err => {
+            vscode.window.showWarningMessage("Wait for gokernel to finish installing, check the install tasks")
+        })
+}
+
+// Installs gokernel, launches the kernel in a task, sends code to be executed, and retrieves output
+export class Kernel {
+    output = vscode.window.createOutputChannel('Go Notebook Kernel')
+    runningExternally = false
     installed = false
-    skipLaunch = false
-    label = 'Go Kernel';
-    id = 'go-kernel';
-    supportedLanguages = ['go'];
-    sessions = new Map();
+    retries = 10
+    GOPATH = ""
+
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
-        if (!this.installed) {
-            await this.install()
-        }
-        if (this.installed) {
-            const tasks = vscode.tasks.taskExecutions
-            let launchTask = true
-            if (tasks.length || this.skipLaunch) {
-                launchTask = false
-            }
+        // Check if task already running
+        let launchTask = true
+        const tasks = vscode.tasks.taskExecutions
+        if (tasks) {
             for (const task of tasks) {
                 if (task.task.name === "gobook") {
                     launchTask = false
                 }
             }
-            if (launchTask) {
-                await this.launch()
-            }
-            for (const cell of cells) {
-                const exec = ctrl.createNotebookCellExecution(cell)
-                exec.start((new Date).getTime())
-                exec.clearOutput()
-                const data = {
-                    index: exec.cell.index,
-                    filename: doc.uri.fsPath,
-                    fragment: +exec.cell.document.uri.fragment.substring(3),
-                    contents: exec.cell.document.getText(),
-                    executing: true
+        }
+
+        if (launchTask && !this.runningExternally && this.installed) {
+            await this.launch()
+        }
+
+        for (const cell of cells) {
+            const exec = ctrl.createNotebookCellExecution(cell)
+            // Used for the cell timer counter
+            exec.start((new Date).getTime())
+            exec.clearOutput()
+            let success = true
+            let res = await sendCodeCell(exec, doc)
+            if (res) {
+                if (res.substring(0, 12) === "exit status ") {
+                    res = res.split("\n").slice(1).join("\n")
+                    success = false
                 }
-                let success = true
-                let res = await fetch("http://127.0.0.1:5250", {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    timeout: 5000
-                })
-                    .then(res => res.text())
-                    .catch(err => { success = false })
-                if (res) {
-                    if (res.substring(0, 12) === "exit status ") {
-                        res = res.split("\n").slice(1).join("\n")
-                        success = false
-                    }
-                    Kernel.output.appendLine(res.trim())
-                    var u8 = new TextEncoder().encode(res.trim())
-                    const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
-                    await exec.appendOutput([new vscode.NotebookCellOutput([x])])
-                }
+                this.output.appendLine(res.trim())
+                var u8 = new TextEncoder().encode(res.trim())
+                const x = new vscode.NotebookCellOutputItem(u8, "text/plain")
+                await exec.appendOutput([new vscode.NotebookCellOutput([x])])
                 exec.end(success, (new Date).getTime())
+            } else {
+                exec.end(false, (new Date).getTime())
             }
         }
     }
+
     async install() {
         try {
+            this.GOPATH = execSync("go env GOPATH").toString().trim()
+            // Still running 'go get gokernel` even if it exists to check for latest
             vscode.window.showInformationMessage("Checking latest version of gopls and gokernel")
-            execSync("go get github.com/gobookdev/gokernel@latest")
-            execSync("go get golang.org/x/tools/gopls@latest")
+            const installGokernel = new vscode.Task(
+                { type: 'shell' },
+                null,
+                'check latest',
+                'gokernel',
+                new vscode.ShellExecution("go get github.com/gobookdev/gokernel@latest"),
+            )
+            const installGopls = new vscode.Task(
+                { type: 'shell' },
+                null,
+                'check latest',
+                'gopls',
+                new vscode.ShellExecution("go get golang.org/x/tools/gopls@latest"),
+            )
+            await Promise.all([vscode.tasks.executeTask(installGokernel), vscode.tasks.executeTask(installGopls)])
             vscode.window.showInformationMessage("gopls and gokernel are up to date")
             this.installed = true
+            this.launch()
         } catch (err) {
             vscode.window.showErrorMessage("Go not installed correctly [Follow instructions here](https://golang.org/doc/install)")
         }
     }
+
     async launch() {
-        const GOPATH = execSync("go env GOPATH").toString().trim()
         const gokernelTask = new vscode.Task(
             { type: 'shell' },
             null,
-            'server',
-            'gokernel',
-            new vscode.ShellExecution(GOPATH + sep + "bin" + sep + "gokernel"),
+            'gobook',
+            'gobook',
+            new vscode.ShellExecution(this.GOPATH + sep + "bin" + sep + "gokernel"),
             ["mywarnings"]
         )
-
-        const portInUse = (port: number, callback: Function) => {
-            const server = createServer(function (socket) {
-                socket.write('Echo server\r\n')
-                socket.pipe(socket)
-            })
-            server.on('error', (e) => {
-                callback(true)
-            })
-            server.on('listening', (e) => {
-                server.close()
-                callback(false)
-            })
-            server.listen(port, '127.0.0.1')
-        }
-
-        portInUse(5250, (running: boolean) => {
-            if (running) {
-                this.skipLaunch = true
-                vscode.window.showInformationMessage("gokernel already running on port 5250")
-            } else {
-                vscode.tasks.executeTask(gokernelTask)
-            }
-        })
+        vscode.tasks.executeTask(gokernelTask)
     }
 }

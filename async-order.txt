@@ -1,0 +1,5 @@
+- go get gopls to check for latest and install if required
+
+- if gokernel exists, start straight away
+- go get gokernel to check for latest and install if required
+- if gokernel didn't exist, start task once installed
