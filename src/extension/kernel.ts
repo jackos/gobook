@@ -13,7 +13,7 @@ const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.Note
         contents: exec.cell.document.getText(),
         executing: true
     }
-    eturn await fetch("http://127.0.0.1:5250", {
+    return await fetch("http://127.0.0.1:5250", {
         method: 'POST',
         body: JSON.stringify(data),
         timeout: 5000
@@ -27,26 +27,12 @@ const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.Note
 // Installs gokernel, launches the kernel in a task, sends code to be executed, and retrieves output
 export class Kernel {
     output = vscode.window.createOutputChannel('Go Notebook Kernel')
-    runningExternally = false
     installed = false
     retries = 10
     GOPATH = ""
 
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
-        // Check if task already running
-        let launchTask = true
-        const tasks = vscode.tasks.taskExecutions
-        if (tasks) {
-            for (const task of tasks) {
-                if (task.task.name === "gobook") {
-                    launchTask = false
-                }
-            }
-        }
 
-        if (launchTask && !this.runningExternally && this.installed) {
-            await this.launch()
-        }
 
         for (const cell of cells) {
             const exec = ctrl.createNotebookCellExecution(cell)
@@ -93,8 +79,8 @@ export class Kernel {
                 'gopls',
                 new vscode.ShellExecution("go get golang.org/x/tools/gopls@latest"),
             )
-            vscode.tasks.executeTask(installGopls)
             await vscode.tasks.executeTask(installGokernel)
+            await vscode.tasks.executeTask(installGopls)
             vscode.window.showInformationMessage("gopls and gokernel are up to date")
             this.installed = true
             this.launch()
@@ -109,9 +95,21 @@ export class Kernel {
             null,
             'gobook',
             'gobook',
-            new vscode.ShellExecution(this.GOPATH + sep + "bin" + sep + "gokernel"),
-            ["mywarnings"]
+            new vscode.ShellExecution(this.GOPATH + sep + "bin" + sep + "gokernel")
+
         )
-        vscode.tasks.executeTask(gokernelTask)
+        // Check if task already running
+        let launchTask = true
+        const tasks = vscode.tasks.taskExecutions
+        if (tasks) {
+            for (const task of tasks) {
+                if (task.task.name === "gobook") {
+                    launchTask = false
+                }
+            }
+        }
+        if (launchTask && this.installed) {
+            vscode.tasks.executeTask(gokernelTask)
+        }
     }
 }
