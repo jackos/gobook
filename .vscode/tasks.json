@@ -21,6 +21,22 @@
 			"label": "rungo",
 			"options": {"cwd": "${fileDirname}"},
 			"command": "go run ${file}"
+		},
+		{
+			"label": "gokernel-mock",
+			"type": "shell",
+			"command": "go get github.com/gobookdev/gokernel",
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false,
+				"close": true,
+				"echo": true,
+				"focus": true,
+				"group": "testGroup",
+				"revealProblems": "never"
+			},
 		}
 	]
 }

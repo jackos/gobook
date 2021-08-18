@@ -1,6 +1,11 @@
 
 # Change Log
 
+## v0.1.14
+Now installs tools asynch and does everything via tasks so user can see what's happening.
+
+If gokernel not started or installed, now cancels cell execution and throws a warning to wait
+
 ## v0.1.8
 Fixed error messages containing javascript text
 

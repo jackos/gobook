@@ -1,18 +1,19 @@
-import { execSync } from 'child_process'
-import * as vscode from 'vscode'
-import { Kernel } from './kernel'
-import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdownParser'
+import { parseMarkdown, writeCellsToMarkdown, RawNotebookCell } from './markdownParser';
+import { Kernel } from './kernel';
+import {
+	window, notebooks, commands, workspace, ExtensionContext,
+	CancellationToken, NotebookSerializer, NotebookData, NotebookCellData
+} from 'vscode';
 
-const kernel = new Kernel()
+const kernel = new Kernel();
 
-export function activate(context: vscode.ExtensionContext) {
-	kernel.install()
-	const controller = vscode.notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel')
-	controller.supportedLanguages = ['go']
-	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl)
-	context.subscriptions.push(vscode.commands.registerCommand('gobook.kernel.restart', () => {
-		vscode.window.showInformationMessage('Restarting kernel')
-	}))
+export function activate(context: ExtensionContext) {
+	const controller = notebooks.createNotebookController('go-kernel', 'gobook', 'Go Kernel');
+	controller.supportedLanguages = ['go'];
+	controller.executeHandler = (cells, doc, ctrl) => kernel.executeCells(doc, cells, ctrl);
+	context.subscriptions.push(commands.registerCommand('gobook.kernel.restart', () => {
+		window.showInformationMessage('Restarting kernel');
+	}));
 
 	const notebookSettings = {
 		transientOutputs: false,
@@ -20,36 +21,37 @@ export function activate(context: vscode.ExtensionContext) {
 			inputCollapsed: true,
 			outputCollapsed: true,
 		}
-	}
+	};
 
-	context.subscriptions.push(vscode.workspace.registerNotebookSerializer('gobook', new MarkdownProvider(), notebookSettings))
+	context.subscriptions.push(workspace.registerNotebookSerializer('gobook', new MarkdownProvider(), notebookSettings));
+	kernel.install();
 }
 
-class MarkdownProvider implements vscode.NotebookSerializer {
-	deserializeNotebook(data: Uint8Array, _token: vscode.CancellationToken): vscode.NotebookData | Thenable<vscode.NotebookData> {
+class MarkdownProvider implements NotebookSerializer {
+	deserializeNotebook(data: Uint8Array, _token: CancellationToken): NotebookData | Thenable<NotebookData> {
 		const content = Buffer.from(data)
-			.toString('utf8')
+			.toString('utf8');
 
-		const cellRawData = parseMarkdown(content)
-		const cells = cellRawData.map(rawToNotebookCellData)
+		const cellRawData = parseMarkdown(content);
+		const cells = cellRawData.map(rawToNotebookCellData);
 
 		return {
 			cells
-		}
+		};
 	}
 
-	serializeNotebook(data: vscode.NotebookData, _token: vscode.CancellationToken): Uint8Array | Thenable<Uint8Array> {
-		const stringOutput = writeCellsToMarkdown(data.cells)
-		return Buffer.from(stringOutput)
+	serializeNotebook(data: NotebookData, _token: CancellationToken): Uint8Array | Thenable<Uint8Array> {
+		const stringOutput = writeCellsToMarkdown(data.cells);
+		return Buffer.from(stringOutput);
 	}
 }
 
-export function rawToNotebookCellData(data: RawNotebookCell): vscode.NotebookCellData {
-	return <vscode.NotebookCellData>{
+export function rawToNotebookCellData(data: RawNotebookCell): NotebookCellData {
+	return <NotebookCellData>{
 		kind: data.kind,
 		languageId: data.language,
 		metadata: { leadingWhitespace: data.leadingWhitespace, trailingWhitespace: data.trailingWhitespace, indentation: data.indentation },
 		outputs: data.outputs || [],
 		value: data.content,
-	}
+	};
 }

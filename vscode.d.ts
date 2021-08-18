@@ -463,7 +463,7 @@ declare module 'vscode' {
 		 * @return A range that reflects the given change. Will return `this` range if the change
 		 * is not changing anything.
 		 */
-		with(change: { start?: Position, end?: Position }): Range;
+		with(change: { start?: Position, end?: Position; }): Range;
 	}
 
 	/**
@@ -1321,7 +1321,7 @@ declare module 'vscode' {
 		 * @param components The component parts of an Uri.
 		 * @return A new Uri instance.
 		 */
-		static from(components: { scheme: string; authority?: string; path?: string; query?: string; fragment?: string }): Uri;
+		static from(components: { scheme: string; authority?: string; path?: string; query?: string; fragment?: string; }): Uri;
 
 		/**
 		 * Use the `file` and `parse` factory functions to create new `Uri` objects.
@@ -1391,7 +1391,7 @@ declare module 'vscode' {
 		 * @return A new Uri that reflects the given change. Will return `this` Uri if the change
 		 *  is not changing anything.
 		 */
-		with(change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string }): Uri;
+		with(change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string; }): Uri;
 
 		/**
 		 * Returns a string representation of this Uri. The representation and normalization
@@ -1492,7 +1492,7 @@ declare module 'vscode' {
 		 * @return Returns a new disposable which, upon dispose, will
 		 * dispose all provided disposables.
 		 */
-		static from(...disposableLikes: { dispose: () => any }[]): Disposable;
+		static from(...disposableLikes: { dispose: () => any; }[]): Disposable;
 
 		/**
 		 * Creates a new Disposable calling the provided function
@@ -1774,7 +1774,7 @@ declare module 'vscode' {
 		 * }
 		 * ```
 		 */
-		filters?: { [name: string]: string[] };
+		filters?: { [name: string]: string[]; };
 
 		/**
 		 * Dialog title.
@@ -1809,7 +1809,7 @@ declare module 'vscode' {
 		 * }
 		 * ```
 		 */
-		filters?: { [name: string]: string[] };
+		filters?: { [name: string]: string[]; };
 
 		/**
 		 * Dialog title.
@@ -1958,7 +1958,7 @@ declare module 'vscode' {
 		 * Otherwise, a uri or string should only be used if the pattern is for a file path outside the workspace.
 		 * @param pattern A file glob pattern like `*.{ts,js}` that will be matched on paths relative to the base.
 		 */
-		constructor(base: WorkspaceFolder | Uri | string, pattern: string)
+		constructor(base: WorkspaceFolder | Uri | string, pattern: string);
 	}
 
 	/**
@@ -2616,7 +2616,7 @@ declare module 'vscode' {
 	 *
 	 * @deprecated This type is deprecated, please use {@link MarkdownString `MarkdownString`} instead.
 	 */
-	export type MarkedString = MarkdownString | string | { language: string; value: string };
+	export type MarkedString = MarkdownString | string | { language: string; value: string; };
 
 	/**
 	 * A hover represents additional information for a symbol or word. Hovers are
@@ -3251,7 +3251,7 @@ declare module 'vscode' {
 		/**
 		 * The icon path or {@link ThemeIcon} for the edit.
 		 */
-		iconPath?: Uri | { light: Uri; dark: Uri } | ThemeIcon;
+		iconPath?: Uri | { light: Uri; dark: Uri; } | ThemeIcon;
 	}
 
 	/**
@@ -3330,7 +3330,7 @@ declare module 'vscode' {
 		 * be applied successfully.
 		 * @param metadata Optional metadata for the entry.
 		 */
-		createFile(uri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		createFile(uri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Delete a file or folder.
@@ -3338,7 +3338,7 @@ declare module 'vscode' {
 		 * @param uri The uri of the file that is to be deleted.
 		 * @param metadata Optional metadata for the entry.
 		 */
-		deleteFile(uri: Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		deleteFile(uri: Uri, options?: { recursive?: boolean, ignoreIfNotExists?: boolean; }, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Rename a file or folder.
@@ -3349,7 +3349,7 @@ declare module 'vscode' {
 		 * ignored. When overwrite and ignoreIfExists are both set overwrite wins.
 		 * @param metadata Optional metadata for the entry.
 		 */
-		renameFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean }, metadata?: WorkspaceEditEntryMetadata): void;
+		renameFile(oldUri: Uri, newUri: Uri, options?: { overwrite?: boolean, ignoreIfExists?: boolean; }, metadata?: WorkspaceEditEntryMetadata): void;
 
 		/**
 		 * Get all text edits grouped by resource.
@@ -3464,7 +3464,7 @@ declare module 'vscode' {
 		 * @param token A cancellation token.
 		 * @return The range or range and placeholder text of the identifier that is to be renamed. The lack of a result can signaled by returning `undefined` or `null`.
 		 */
-		prepareRename?(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range | { range: Range, placeholder: string }>;
+		prepareRename?(document: TextDocument, position: Position, token: CancellationToken): ProviderResult<Range | { range: Range, placeholder: string; }>;
 	}
 
 	/**
@@ -4460,7 +4460,7 @@ declare module 'vscode' {
 		 * @return An array of color presentations or a thenable that resolves to such. The lack of a result
 		 * can be signaled by returning `undefined`, `null`, or an empty array.
 		 */
-		provideColorPresentations(color: Color, context: { document: TextDocument, range: Range }, token: CancellationToken): ProviderResult<ColorPresentation[]>;
+		provideColorPresentations(color: Color, context: { document: TextDocument, range: Range; }, token: CancellationToken): ProviderResult<ColorPresentation[]>;
 	}
 
 	/**
@@ -5989,7 +5989,7 @@ declare module 'vscode' {
 		 * An array to which disposables can be added. When this
 		 * extension is deactivated the disposables will be disposed.
 		 */
-		readonly subscriptions: { dispose(): any }[];
+		readonly subscriptions: { dispose(): any; }[];
 
 		/**
 		 * A memento object that stores state in the context
@@ -6308,6 +6308,11 @@ declare module 'vscode' {
 		 * Controls whether the terminal is cleared before executing the task.
 		 */
 		clear?: boolean;
+
+		// /** 
+		//  * Controls whether the terminal is closed after executing the task.
+		//  */
+		close?: boolean;
 	}
 
 	/**
@@ -6382,7 +6387,7 @@ declare module 'vscode' {
 		 * the parent process' environment is used. If provided it is merged with
 		 * the parent process' environment.
 		 */
-		env?: { [key: string]: string };
+		env?: { [key: string]: string; };
 	}
 
 	/**
@@ -6490,7 +6495,7 @@ declare module 'vscode' {
 		 * the parent process' environment is used. If provided it is merged with
 		 * the parent process' environment.
 		 */
-		env?: { [key: string]: string };
+		env?: { [key: string]: string; };
 	}
 
 	/**
@@ -7099,7 +7104,7 @@ declare module 'vscode' {
 		 * @param options Configures the watch.
 		 * @returns A disposable that tells the provider to stop watching the `uri`.
 		 */
-		watch(uri: Uri, options: { recursive: boolean; excludes: string[] }): Disposable;
+		watch(uri: Uri, options: { recursive: boolean; excludes: string[]; }): Disposable;
 
 		/**
 		 * Retrieve metadata about a file.
@@ -7153,7 +7158,7 @@ declare module 'vscode' {
 		 * @throws {@link FileSystemError.FileExists `FileExists`} when `uri` already exists, `create` is set but `overwrite` is not set.
 		 * @throws {@link FileSystemError.NoPermissions `NoPermissions`} when permissions aren't sufficient.
 		 */
-		writeFile(uri: Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): void | Thenable<void>;
+		writeFile(uri: Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean; }): void | Thenable<void>;
 
 		/**
 		 * Delete a file.
@@ -7163,7 +7168,7 @@ declare module 'vscode' {
 		 * @throws {@link FileSystemError.FileNotFound `FileNotFound`} when `uri` doesn't exist.
 		 * @throws {@link FileSystemError.NoPermissions `NoPermissions`} when permissions aren't sufficient.
 		 */
-		delete(uri: Uri, options: { recursive: boolean }): void | Thenable<void>;
+		delete(uri: Uri, options: { recursive: boolean; }): void | Thenable<void>;
 
 		/**
 		 * Rename a file or folder.
@@ -7176,7 +7181,7 @@ declare module 'vscode' {
 		 * @throws {@link FileSystemError.FileExists `FileExists`} when `newUri` exists and when the `overwrite` option is not `true`.
 		 * @throws {@link FileSystemError.NoPermissions `NoPermissions`} when permissions aren't sufficient.
 		 */
-		rename(oldUri: Uri, newUri: Uri, options: { overwrite: boolean }): void | Thenable<void>;
+		rename(oldUri: Uri, newUri: Uri, options: { overwrite: boolean; }): void | Thenable<void>;
 
 		/**
 		 * Copy files or folders. Implementing this function is optional but it will speedup
@@ -7190,7 +7195,7 @@ declare module 'vscode' {
 		 * @throws {@link FileSystemError.FileExists `FileExists`} when `destination` exists and when the `overwrite` option is not `true`.
 		 * @throws {@link FileSystemError.NoPermissions `NoPermissions`} when permissions aren't sufficient.
 		 */
-		copy?(source: Uri, destination: Uri, options: { overwrite: boolean }): void | Thenable<void>;
+		copy?(source: Uri, destination: Uri, options: { overwrite: boolean; }): void | Thenable<void>;
 	}
 
 	/**
@@ -7251,7 +7256,7 @@ declare module 'vscode' {
 		 * @param uri The resource that is to be deleted.
 		 * @param options Defines if trash can should be used and if deletion of folders is recursive
 		 */
-		delete(uri: Uri, options?: { recursive?: boolean, useTrash?: boolean }): Thenable<void>;
+		delete(uri: Uri, options?: { recursive?: boolean, useTrash?: boolean; }): Thenable<void>;
 
 		/**
 		 * Rename a file or folder.
@@ -7260,7 +7265,7 @@ declare module 'vscode' {
 		 * @param newUri The new location.
 		 * @param options Defines if existing files should be overwritten.
 		 */
-		rename(source: Uri, target: Uri, options?: { overwrite?: boolean }): Thenable<void>;
+		rename(source: Uri, target: Uri, options?: { overwrite?: boolean; }): Thenable<void>;
 
 		/**
 		 * Copy files or folders.
@@ -7269,7 +7274,7 @@ declare module 'vscode' {
 		 * @param destination The destination location.
 		 * @param options Defines if existing files should be overwritten.
 		 */
-		copy(source: Uri, target: Uri, options?: { overwrite?: boolean }): Thenable<void>;
+		copy(source: Uri, target: Uri, options?: { overwrite?: boolean; }): Thenable<void>;
 
 		/**
 		 * Check if a given file system supports writing files.
@@ -7482,7 +7487,7 @@ declare module 'vscode' {
 		/**
 		 * Icon for the panel shown in UI.
 		 */
-		iconPath?: Uri | { light: Uri; dark: Uri };
+		iconPath?: Uri | { light: Uri; dark: Uri; };
 
 		/**
 		 * {@link Webview `Webview`} belonging to the panel.
@@ -8743,7 +8748,7 @@ declare module 'vscode' {
 		 *
 		 * @return New webview panel.
 		 */
-		export function createWebviewPanel(viewType: string, title: string, showOptions: ViewColumn | { viewColumn: ViewColumn, preserveFocus?: boolean }, options?: WebviewPanelOptions & WebviewOptions): WebviewPanel;
+		export function createWebviewPanel(viewType: string, title: string, showOptions: ViewColumn | { viewColumn: ViewColumn, preserveFocus?: boolean; }, options?: WebviewPanelOptions & WebviewOptions): WebviewPanel;
 
 		/**
 		 * Set a message to the status bar. This is a short hand for the more powerful
@@ -8808,7 +8813,7 @@ declare module 'vscode' {
 		 *
 		 * @return The thenable the task-callback returned.
 		 */
-		export function withProgress<R>(options: ProgressOptions, task: (progress: Progress<{ message?: string; increment?: number }>, token: CancellationToken) => Thenable<R>): Thenable<R>;
+		export function withProgress<R>(options: ProgressOptions, task: (progress: Progress<{ message?: string; increment?: number; }>, token: CancellationToken) => Thenable<R>): Thenable<R>;
 
 		/**
 		 * Creates a status bar {@link StatusBarItem item}.
@@ -9138,7 +9143,7 @@ declare module 'vscode' {
 		 *
 		 * **NOTE:** The {@link TreeDataProvider} that the `TreeView` {@link window.createTreeView is registered with} with must implement {@link TreeDataProvider.getParent getParent} method to access this API.
 		 */
-		reveal(element: T, options?: { select?: boolean, focus?: boolean, expand?: boolean | number }): Thenable<void>;
+		reveal(element: T, options?: { select?: boolean, focus?: boolean, expand?: boolean | number; }): Thenable<void>;
 	}
 
 	/**
@@ -9221,7 +9226,7 @@ declare module 'vscode' {
 		 * When `falsy`, {@link ThemeIcon.Folder Folder Theme Icon} is assigned, if item is collapsible otherwise {@link ThemeIcon.File File Theme Icon}.
 		 * When a file or folder {@link ThemeIcon} is specified, icon is derived from the current file icon theme for the specified theme icon using {@link TreeItem.resourceUri resourceUri} (if provided).
 		 */
-		iconPath?: string | Uri | { light: string | Uri; dark: string | Uri } | ThemeIcon;
+		iconPath?: string | Uri | { light: string | Uri; dark: string | Uri; } | ThemeIcon;
 
 		/**
 		 * A human-readable string which is rendered less prominent.
@@ -9359,7 +9364,7 @@ declare module 'vscode' {
 		/**
 		 * Object with environment variables that will be added to the editor process.
 		 */
-		env?: { [key: string]: string | null | undefined };
+		env?: { [key: string]: string | null | undefined; };
 
 		/**
 		 * Whether the terminal process environment should be exactly as provided in
@@ -9725,7 +9730,7 @@ declare module 'vscode' {
 		/**
 		 * The location at which progress should show.
 		 */
-		location: ProgressLocation | { viewId: string };
+		location: ProgressLocation | { viewId: string; };
 
 		/**
 		 * A human-readable string which will be used to describe the
@@ -9978,7 +9983,7 @@ declare module 'vscode' {
 		/**
 		 * Icon for the button.
 		 */
-		readonly iconPath: Uri | { light: Uri; dark: Uri } | ThemeIcon;
+		readonly iconPath: Uri | { light: Uri; dark: Uri; } | ThemeIcon;
 
 		/**
 		 * An optional tooltip.
@@ -10238,7 +10243,7 @@ declare module 'vscode' {
 		/**
 		 * The files that are going to be renamed.
 		 */
-		readonly files: ReadonlyArray<{ readonly oldUri: Uri, readonly newUri: Uri }>;
+		readonly files: ReadonlyArray<{ readonly oldUri: Uri, readonly newUri: Uri; }>;
 
 		/**
 		 * Allows to pause the event and to apply a {@link WorkspaceEdit workspace edit}.
@@ -10278,7 +10283,7 @@ declare module 'vscode' {
 		/**
 		 * The files that got renamed.
 		 */
-		readonly files: ReadonlyArray<{ readonly oldUri: Uri, readonly newUri: Uri }>;
+		readonly files: ReadonlyArray<{ readonly oldUri: Uri, readonly newUri: Uri; }>;
 	}
 
 	/**
@@ -10483,7 +10488,7 @@ declare module 'vscode' {
 		 * @return true if the operation was successfully started and false otherwise if arguments were used that would result
 		 * in invalid workspace folder state (e.g. 2 folders with the same URI).
 		 */
-		export function updateWorkspaceFolders(start: number, deleteCount: number | undefined | null, ...workspaceFoldersToAdd: { uri: Uri, name?: string }[]): boolean;
+		export function updateWorkspaceFolders(start: number, deleteCount: number | undefined | null, ...workspaceFoldersToAdd: { uri: Uri, name?: string; }[]): boolean;
 
 		/**
 		 * Creates a file system watcher.
@@ -10828,7 +10833,7 @@ declare module 'vscode' {
 		 * @param options Immutable metadata about the provider.
 		 * @return A {@link Disposable} that unregisters this provider when being disposed.
 		 */
-		export function registerFileSystemProvider(scheme: string, provider: FileSystemProvider, options?: { readonly isCaseSensitive?: boolean, readonly isReadonly?: boolean }): Disposable;
+		export function registerFileSystemProvider(scheme: string, provider: FileSystemProvider, options?: { readonly isCaseSensitive?: boolean, readonly isReadonly?: boolean; }): Disposable;
 
 		/**
 		 * When true, the user has explicitly trusted the contents of the workspace.
@@ -10847,7 +10852,7 @@ declare module 'vscode' {
 	 * a '{@link TextDocument}' or
 	 * a '{@link WorkspaceFolder}'
 	 */
-	export type ConfigurationScope = Uri | TextDocument | WorkspaceFolder | { uri?: Uri, languageId: string };
+	export type ConfigurationScope = Uri | TextDocument | WorkspaceFolder | { uri?: Uri, languageId: string; };
 
 	/**
 	 * An event describing the change in Configuration
@@ -11419,7 +11424,7 @@ declare module 'vscode' {
 		/**
 		 * The metadata of this cell. Can be anything but must be JSON-stringifyable.
 		 */
-		readonly metadata: { [key: string]: any }
+		readonly metadata: { [key: string]: any; };
 
 		/**
 		 * The outputs of this cell.
@@ -11478,7 +11483,7 @@ declare module 'vscode' {
 		/**
 		 * Arbitrary metadata for this notebook. Can be anything but must be JSON-stringifyable.
 		 */
-		readonly metadata: { [key: string]: any };
+		readonly metadata: { [key: string]: any; };
 
 		/**
 		 * The number of cells in the notebook.
@@ -11529,7 +11534,7 @@ declare module 'vscode' {
 		/**
 		 * The times at which execution started and ended, as unix timestamps
 		 */
-		readonly timing?: { startTime: number, endTime: number };
+		readonly timing?: { startTime: number, endTime: number; };
 	}
 
 	/**
@@ -11569,7 +11574,7 @@ declare module 'vscode' {
 		 * @return A range that reflects the given change. Will return `this` range if the change
 		 * is not changing anything.
 		 */
-		with(change: { start?: number, end?: number }): NotebookRange;
+		with(change: { start?: number, end?: number; }): NotebookRange;
 	}
 
 	/**
@@ -11677,7 +11682,7 @@ declare module 'vscode' {
 		/**
 		 * Arbitrary metadata for this cell output. Can be anything but must be JSON-stringifyable.
 		 */
-		metadata?: { [key: string]: any };
+		metadata?: { [key: string]: any; };
 
 		/**
 		 * Create new notebook output.
@@ -11685,7 +11690,7 @@ declare module 'vscode' {
 		 * @param items Notebook output items.
 		 * @param metadata Optional metadata.
 		 */
-		constructor(items: NotebookCellOutputItem[], metadata?: { [key: string]: any });
+		constructor(items: NotebookCellOutputItem[], metadata?: { [key: string]: any; });
 	}
 
 	/**
@@ -11717,7 +11722,7 @@ declare module 'vscode' {
 		/**
 		 * Arbitrary metadata of this cell data. Can be anything but must be JSON-stringifyable.
 		 */
-		metadata?: { [key: string]: any };
+		metadata?: { [key: string]: any; };
 
 		/**
 		 * The execution summary of this cell data.
@@ -11752,7 +11757,7 @@ declare module 'vscode' {
 		/**
 		 * Arbitrary metadata of notebook data.
 		 */
-		metadata?: { [key: string]: any };
+		metadata?: { [key: string]: any; };
 
 		/**
 		 * Create new notebook data.
@@ -11808,13 +11813,13 @@ declare module 'vscode' {
 		 * Controls if a cell metadata property change will trigger notebook document content change and if it will be used in the diff editor
 		 * Default to false. If the content provider doesn't persisit a metadata property in the file document, it should be set to true.
 		 */
-		transientCellMetadata?: { [key: string]: boolean | undefined };
+		transientCellMetadata?: { [key: string]: boolean | undefined; };
 
 		/**
 		* Controls if a document metadata property change will trigger notebook document content change and if it will be used in the diff editor
 		* Default to false. If the content provider doesn't persisit a metadata property in the file document, it should be set to true.
 		*/
-		transientDocumentMetadata?: { [key: string]: boolean | undefined };
+		transientDocumentMetadata?: { [key: string]: boolean | undefined; };
 	}
 
 	/**
@@ -11944,7 +11949,7 @@ declare module 'vscode' {
 		 * _Note_ that controller selection is persisted (by the controllers {@link NotebookController.id id}) and restored as soon as a
 		 * controller is re-created or as a notebook is {@link workspace.onDidOpenNotebookDocument opened}.
 		 */
-		readonly onDidChangeSelectedNotebooks: Event<{ notebook: NotebookDocument, selected: boolean }>;
+		readonly onDidChangeSelectedNotebooks: Event<{ notebook: NotebookDocument, selected: boolean; }>;
 
 		/**
 		 * A controller can set affinities for specific notebook documents. This allows a controller
@@ -12632,7 +12637,7 @@ declare module 'vscode' {
 		 * the parent process' environment is used. If provided it is merged with
 		 * the parent process' environment.
 		 */
-		env?: { [key: string]: string };
+		env?: { [key: string]: string; };
 
 		/**
 		 * The current working directory for the executed debug adapter.
@@ -13609,7 +13614,7 @@ declare module 'vscode' {
 		 * @param options The {@link GetSessionOptions} to use
 		 * @returns A thenable that resolves to an authentication session
 		 */
-		export function getSession(providerId: string, scopes: readonly string[], options: AuthenticationGetSessionOptions & { createIfNone: true }): Thenable<AuthenticationSession>;
+		export function getSession(providerId: string, scopes: readonly string[], options: AuthenticationGetSessionOptions & { createIfNone: true; }): Thenable<AuthenticationSession>;
 
 		/**
 		 * Get an authentication session matching the desired scopes. Rejects if a provider with providerId is not
