@@ -41,4 +41,3 @@ steps:
     echo ">>> Publish"
   displayName: Publish
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-woeusb  --target-filesystem NTFS --device ~/Downloads/windows.iso /dev/sdb2
