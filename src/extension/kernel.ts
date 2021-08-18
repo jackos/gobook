@@ -3,7 +3,6 @@ import fetch from 'node-fetch'
 import { TextEncoder } from 'util'
 import { execSync } from 'child_process'
 import { sep } from 'path'
-import { error } from 'console'
 
 const sendCodeCell = async (exec: vscode.NotebookCellExecution, doc: vscode.NotebookDocument): Promise<string | void> => {
     const data = {
@@ -32,8 +31,7 @@ export class Kernel {
     GOPATH = ""
 
     async executeCells(doc: vscode.NotebookDocument, cells: vscode.NotebookCell[], ctrl: vscode.NotebookController): Promise<void> {
-
-
+        this.launch()
         for (const cell of cells) {
             const exec = ctrl.createNotebookCellExecution(cell)
             if (!this.installed) {
@@ -108,6 +106,7 @@ export class Kernel {
                 }
             }
         }
+        vscode.window.showInformationMessage(`launchTask: ${launchTask}`)
         if (launchTask && this.installed) {
             vscode.tasks.executeTask(gokernelTask)
         }
