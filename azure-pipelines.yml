@@ -32,7 +32,7 @@ steps:
 - bash: |
     echo ">>> Compile, line, test"
     npm i
-    npm run deploy -- -p \"$(MARKETPLACE_TOKEN)\"
+    npm run deploy -- -p $(MARKETPLACE_TOKEN)
   displayName: Compile, Lint, Test
   env:
     DISPLAY: ':99.0'
@@ -41,3 +41,4 @@ steps:
     echo ">>> Publish"
   displayName: Publish
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+woeusb  --target-filesystem NTFS --device ~/Downloads/windows.iso /dev/sdb2

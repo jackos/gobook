@@ -78,7 +78,7 @@ export class Kernel {
                 TaskScope.Workspace,
                 "gopls-get",
                 "gopls-get",
-                new ShellExecution("go get golang.org/x/tools/gopls@latest"),
+                new ShellExecution("go install golang.org/x/tools/gopls@latest"),
             );
             installGopls.presentationOptions = presentationOptions;
 
@@ -87,7 +87,7 @@ export class Kernel {
                 TaskScope.Workspace,
                 "gokernel-get",
                 "gokernel-get",
-                new ShellExecution("go get github.com/gobookdev/gokernel@latest"),
+                new ShellExecution("go install github.com/gobookdev/gokernel@latest"),
             );
             installGokernel.presentationOptions = presentationOptions;
 
@@ -102,7 +102,8 @@ export class Kernel {
     async launch() {
         const gokernelPath = this.GOPATH + sep + "bin" + sep + "gokernel";
         const fileExists = existsSync(gokernelPath);
-        if (!fileExists) {
+        const fileExistsWindows = existsSync(gokernelPath + ".exe");
+        if (!fileExists && !fileExistsWindows) {
             window.showWarningMessage(`Please wait for gokernel to finish installing`);
         } else {
             const gokernelTask = new Task(
