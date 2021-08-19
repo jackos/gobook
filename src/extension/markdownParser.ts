@@ -181,9 +181,9 @@ export function writeCellsToMarkdown(cells: ReadonlyArray<NotebookCellData>): st
 			const codeSuffix = '\n' + indentation + '```\n';
 			result += sep;
 			result += codePrefix + contents + codeSuffix;
-			if (outputParsed != '' && outputParsed != '\n' && outputParsed.length > 0) {
+			if (outputParsed !== '' && outputParsed !== '\n' && outputParsed.length > 0) {
 				result += '```output\n' + outputParsed;
-				if (outputParsed.slice(-1) != '\n') {
+				if (outputParsed.slice(-1) !== '\n') {
 					result += '\n';
 				}
 				result += '```\n';

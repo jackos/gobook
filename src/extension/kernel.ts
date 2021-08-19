@@ -51,7 +51,7 @@ export class Kernel {
             exec.clearOutput();
             let success = false;
             let res = await sendCodeCell(exec, doc);
-            if (res || res == "") {
+            if (res || res === "") {
                 if (res.substring(0, 12) === "exit status ") {
                     res = res.split("\n").slice(1).join("\n");
                 } else {
