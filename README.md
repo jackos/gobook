@@ -1,3 +1,4 @@
+__(Deprecated - moved to https://github.com/jackos/hackdown)__
 
 # Gobook: Go Notebook VS Code Extension
 
