@@ -1,4 +1,4 @@
-__(Deprecated - moved to https://github.com/jackos/hackdown)__
+__Deprecated for https://github.com/jackos/ultnote__
 
 # Gobook: Go Notebook VS Code Extension
 
