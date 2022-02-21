@@ -1,4 +1,7 @@
-__Deprecated for https://github.com/jackos/ultnote__
+__Deprecated__
+This extension has moved into [codebook](https://marketplace.visualstudio.com/items?itemName=codebook.codebook)
+
+It's a much faster implementation that supports multiple languages, has no external binary and comes with extra features such as importing external packages. Gopls support is coming soon.
 
 # Gobook: Go Notebook VS Code Extension
 
